@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "node deploy.js"
+    "deploy": "node deploy.cjs"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
