@@ -2,7 +2,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 
 const deployDir = 'dist';
-const remote = 'https://github.com/<your-username>/<your-repo>.git';
+const remote = 'https://github.com/D-reev/expTracker.git';
 
 try {
   console.log('Creating temporary deployment...');
