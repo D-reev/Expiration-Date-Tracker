@@ -46,7 +46,7 @@ function ExpiredProducts() {
     };
 
     const handleCloseNotification = () => {
-        setNotification(null); // Clear the notification
+        setNotification(null); 
     };
 
     const handleOpenDeleteModal = () => {

@@ -89,9 +89,9 @@ function Inventory() {
         category: categoryRef.current.value,
         quantity: quantityRef.current.value,
         unit: unitRef.current.value,
-        expiry_date: new Date(expiry_dateRef.current.value).toISOString().slice(0, 10), // Format to date only
-        added_date: new Date(added_dateRef.current.value).toISOString().slice(0, 10), // Format to date only
-        notification_sent: false, // Include the notification_sent field
+        expiry_date: new Date(expiry_dateRef.current.value).toISOString().slice(0, 10), 
+        added_date: new Date(added_dateRef.current.value).toISOString().slice(0, 10), 
+        notification_sent: false, 
       };
     
       try {
@@ -112,11 +112,6 @@ function Inventory() {
 
         if (!newProduct.added_date) {
           alert("Please enter an added date");
-          return;
-        }
-
-        if (!newProduct.unit) {
-          alert("Please enter a unit");
           return;
         }
 
@@ -160,13 +155,10 @@ function Inventory() {
       console.log("Deleting product with prodid:", selectedProduct.prodid); // Debugging
   
       try {
-          // Send DELETE request to the backend
           await axios.delete(`http://localhost:1337/deleteproductmongo/${selectedProduct.prodid}`);
-          
-          // Fetch updated product list
+
           fetchProducts();
-          
-          // Close the delete modal
+
           closeModalDelete();
       } catch (error) {
           console.error("Error deleting product:", error.message);

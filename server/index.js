@@ -10,30 +10,6 @@ const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost:27017/ExpirationTracker");
 
-// async function ensureAdminAccount() {
-//   const adminEmail = "admin@exptracker.com";
-//   const adminUser = await User.findOne({ email: adminEmail });
-//     const bcrypt = require("bcrypt");
-//   if (!adminUser) {
-//     const hashedPassword = await bcrypt.hash("admin123", 10); 
-//     await User.create({
-//       userid: 1,
-//       name: "Admin",
-//       email: adminEmail,
-//       password: hashedPassword,
-//       role: "admin",
-//       created_at: new Date().toISOString().slice(0, 10)
-//     });
-//     console.log("Hard-coded admin account created.");
-//   } else {
-//     console.log("Admin account already exists.");
-//   }
-// }
-
-// mongoose.connection.once("open", () => {
-//   ensureAdminAccount();
-// });
-
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -368,6 +344,16 @@ const createLog = async (action, prodid, prodname, user) => {
     console.error("Error creating log:", err);
   }
 };
+
+app.get("/expiredproducts/count", async (req, res) => {
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const count = await Product.countDocuments({ expiry_date: { $lt: today } });
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // Start the server
 server.listen(port, () => {

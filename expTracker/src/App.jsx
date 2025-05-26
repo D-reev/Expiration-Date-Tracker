@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
-import { Snackbar, Alert } from "@mui/material";
+import { Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -8,12 +8,15 @@ import Inventory from "./pages/Inventory";
 import ExpiredProducts from "./pages/ExpiredProducts";
 import UserManagement from "./pages/UserManagement";
 import AdminLogs from "./pages/AdminLogs";
+import axios from "axios";
 
 const socket = io("http://localhost:1337");
 
 function App() {
     const [notification, setNotification] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
+    const [expiredModalOpen, setExpiredModalOpen] = useState(false);
+    const [expiredCount, setExpiredCount] = useState(0);
 
     useEffect(() => {
         socket.on("expiredProducts", (data) => {
@@ -24,9 +27,28 @@ function App() {
         };
     }, []);
 
+    // Fetch expired products count when logged in
+    useEffect(() => {
+        if (currentUser) {
+            async function fetchExpiredCount() {
+                try {
+                    const response = await axios.get("http://localhost:1337/expiredproducts/count");
+                    setExpiredCount(response.data.count || 0);
+                    if (response.data.count > 0) {
+                        setExpiredModalOpen(true);
+                    }
+                } catch (error) {
+                    console.error("Error fetching expired products count:", error);
+                }
+            }
+            fetchExpiredCount();
+        }
+    }, [currentUser]);
+
     return (
         <Router>
             <div>
+                {/* Snackbar for notifications */}
                 <Snackbar
                     open={!!notification}
                     autoHideDuration={6000}
@@ -40,6 +62,24 @@ function App() {
                         {notification}
                     </Alert>
                 </Snackbar>
+
+                {/* Modal for expired products */}
+                <Dialog open={expiredModalOpen} onClose={() => setExpiredModalOpen(false)}>
+                    <DialogTitle className="dialog-title">Expired Products</DialogTitle>
+                    <DialogContent className="dialog-content">
+                        <p>There are {expiredCount} expired products in the inventory.</p>
+                    </DialogContent>
+                    <DialogActions className="dialog-actions">
+                        <Button
+                            onClick={() => setExpiredModalOpen(false)}
+                            className="dialog-button-close"
+                        >
+                            Close
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+
+                {/* Routes */}
                 <Routes>
                     <Route path="/" element={<Navigate to="/login" replace />} />
                     <Route path="/login" element={<Login setCurrentUser={setCurrentUser} />} />

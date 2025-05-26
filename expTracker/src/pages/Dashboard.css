@@ -31,14 +31,14 @@
 }
 
 .cards {
-    display: flex;
-    gap: 300px; /* Increase this value for more space between cards */
-    flex-wrap: wrap;
-    margin-top: 40px;
-    padding-left: 200px;
+  display: flex;
+  flex-wrap: wrap; /* Allows wrapping to the next row if needed */
+  justify-content: space-between; /* Adds space between cards */
+  gap: 20px; /* Adjusts spacing between cards */
+  margin-top: 40px;
+  padding: 0 20px; /* Adds padding to the container */
 }
 
-/* Rest of your original card styles remain unchanged */
 .cards .student {
     background-color: #26415e;
 }
@@ -52,19 +52,21 @@
 }
 
 .cards .card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-    height: 150px;
-    width: 250px;
-    color: white;
-    cursor: pointer;
-    transition: transform 400ms, filter 400ms;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-    border-radius: 12px;
-    background-clip: padding-box;
+  flex: 1 1 calc(33.33% - 40px); /* Ensures 3 cards per row with spacing */
+  max-width: calc(33.33% - 40px); /* Prevents cards from exceeding their row */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  height: 150px;
+  color: white;
+  cursor: pointer;
+  transition: transform 400ms, filter 400ms;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  background-clip: padding-box;
+  background-color: #26415e; /* Default card background color */
 }
 
 .cards .card p.tip {
@@ -78,15 +80,15 @@
 }
 
 .cards .card:hover {
-    transform: scale(1.08);
-    z-index: 2;
-    filter: none;
+  transform: scale(1.08);
+  z-index: 2;
+  filter: none;
 }
 
 .cards:hover > .card:not(:hover) {
-    filter: blur(4px) grayscale(0.2);
-    transform: scale(0.96);
-    z-index: 1;
+  filter: blur(4px) grayscale(0.2);
+  transform: scale(0.96);
+  z-index: 1;
 }
 
 /* Responsive styles */
@@ -98,14 +100,15 @@
     }
     
     .cards {
-        flex-direction: column;
+        flex-direction: column; /* Stacks cards vertically */
         align-items: center;
-        padding-left: 0;
+        gap: 20px;
     }
     
     .cards .card {
-        width: 90vw;
-        margin-top: 20px;
+        width: 90%; /* Full width for smaller screens */
+        max-width: 90%;
+        margin: 0 auto;
     }
 }
 
