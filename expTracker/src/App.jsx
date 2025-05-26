@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import { Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Inventory from "./pages/Inventory";
@@ -46,7 +46,7 @@ function App() {
     }, [currentUser]);
 
     return (
-        <Router>
+        <HashRouter>
             <div>
                 {/* Snackbar for notifications */}
                 <Snackbar
@@ -91,7 +91,7 @@ function App() {
                     <Route path="*" element={<h1>404 - Page Not Found</h1>} />
                 </Routes>
             </div>
-        </Router>
+        </HashRouter>
     );
 }
 
