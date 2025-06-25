@@ -7,8 +7,12 @@ const http = require("http");
 const { Server } = require("socket.io");
 const bcrypt = require("bcrypt");
 
-const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost:27017/ExpirationTracker");
+require('dotenv').config(); // loads .env
+const mongoose = require('mongoose');
+
+mongoose.connect("mongodb://localhost:27017/exptracker")
+  .then(() => console.log("✅ MongoDB (local) connected"))
+  .catch(err => console.error("❌ MongoDB error:", err));
 
 const app = express();
 app.use(cors());
