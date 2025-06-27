@@ -8,6 +8,7 @@ import Inventory from "./pages/Inventory";
 import ExpiredProducts from "./pages/ExpiredProducts";
 import UserManagement from "./pages/UserManagement";
 import AdminLogs from "./pages/AdminLogs";
+import Cashier from "./pages/Cashier";
 import axios from "axios";
 
 const socket = io("http://localhost:1337");
@@ -29,7 +30,7 @@ function App() {
 
     // Fetch expired products count when logged in
     useEffect(() => {
-        if (currentUser) {
+        if (currentUser && currentUser.role === "employee") {
             async function fetchExpiredCount() {
                 try {
                     const response = await axios.get("http://localhost:1337/expiredproducts/count");
@@ -49,35 +50,39 @@ function App() {
         <HashRouter>
             <div>
                 {/* Snackbar for notifications */}
-                <Snackbar
-                    open={!!notification}
-                    autoHideDuration={6000}
-                    onClose={() => setNotification(null)}
-                >
-                    <Alert
+                {currentUser && currentUser.role === "employee" && (
+                    <Snackbar
+                        open={!!notification}
+                        autoHideDuration={6000}
                         onClose={() => setNotification(null)}
-                        severity="warning"
-                        sx={{ width: "100%" }}
                     >
-                        {notification}
-                    </Alert>
-                </Snackbar>
+                        <Alert
+                            onClose={() => setNotification(null)}
+                            severity="warning"
+                            sx={{ width: "100%" }}
+                        >
+                            {notification}
+                        </Alert>
+                    </Snackbar>
+                )}
 
                 {/* Modal for expired products */}
-                <Dialog open={expiredModalOpen} onClose={() => setExpiredModalOpen(false)}>
-                    <DialogTitle className="dialog-title">Expired Products</DialogTitle>
-                    <DialogContent className="dialog-content">
-                        <p>There are {expiredCount} expired products in the inventory.</p>
-                    </DialogContent>
-                    <DialogActions className="dialog-actions">
-                        <Button
-                            onClick={() => setExpiredModalOpen(false)}
-                            className="dialog-button-close"
-                        >
-                            Close
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                {currentUser && currentUser.role === "employee" && (
+                    <Dialog open={expiredModalOpen} onClose={() => setExpiredModalOpen(false)}>
+                        <DialogTitle className="dialog-title">Expired Products</DialogTitle>
+                        <DialogContent className="dialog-content">
+                            <p>There are {expiredCount} expired products in the inventory.</p>
+                        </DialogContent>
+                        <DialogActions className="dialog-actions">
+                            <Button
+                                onClick={() => setExpiredModalOpen(false)}
+                                className="dialog-button-close"
+                            >
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                )}
 
                 {/* Routes */}
                 <Routes>
@@ -88,6 +93,7 @@ function App() {
                     <Route path="/expiredproducts" element={currentUser ? <ExpiredProducts currentUser={currentUser} /> : <Navigate to="/login" />} />
                     <Route path="/usermanagement" element={currentUser ? <UserManagement currentUser={currentUser} /> : <Navigate to="/login" />} />
                     <Route path="/adminlogs" element={currentUser ? <AdminLogs currentUser={currentUser} /> : <Navigate to="/login" />} />
+                    <Route path="/cashier" element={currentUser ? <Cashier currentUser={currentUser} /> : <Navigate to="/login" />} />
                     <Route path="*" element={<h1>404 - Page Not Found</h1>} />
                 </Routes>
             </div>

@@ -16,6 +16,7 @@ function Login({ setCurrentUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signupmodalOpen, setSignupModalOpen] = useState(false);
+  const [signupRole, setSignupRole] = useState("employee"); 
 
   // For signup
   const nameRef = useRef();
@@ -34,7 +35,12 @@ function Login({ setCurrentUser }) {
       if (response.data && response.data.email) {
         setCurrentUser(response.data);
         localStorage.setItem("currentUser", JSON.stringify(response.data));
-        navigate("/dashboard");
+        // Redirect based on role
+        if (response.data.role === "cashier") {
+          navigate("/cashier");
+        } else {
+          navigate("/dashboard");
+        }
       } else {
         alert(response.data.error || "Invalid email or password.");
       }
@@ -54,7 +60,7 @@ function Login({ setCurrentUser }) {
       name: nameRef.current.value,
       email: emailRef.current.value,
       password: passwordRef.current.value,
-      role: "employee",
+      role: signupRole,
     };
 
     if (!newUser.name || !newUser.email || !newUser.password) {
@@ -76,13 +82,14 @@ function Login({ setCurrentUser }) {
       await axios.post("http://localhost:1337/signup", newUser);
       alert("User successfully registered! You can now log in.");
       resetForm();
-      setSignupModalOpen(false);
     } catch (error) {
       console.error("Error adding user:", error);
       alert(
         error.response?.data?.error ||
           "Failed to add user. Please try again."
       );
+    } finally {
+      setSignupModalOpen(false); // Always close modal after submit
     }
   }
 
@@ -130,19 +137,39 @@ function Login({ setCurrentUser }) {
             Signin
           </Button>
         </form>
+
         <div className="signup">
-          <button
+          <h1>Sign Up as :</h1>
+          <Button
             className="signup-button"
-            onClick={() => setSignupModalOpen(true)}
+            variant="outlined"
+            onClick={() => {
+              setSignupRole("employee");
+              setSignupModalOpen(true);
+            }}
+            type="button"
+            sx={{ mr: 2 }}
+          >
+            Employee
+          </Button>
+          <Button
+            className="signup-button"
+            variant="outlined"
+            onClick={() => {
+              setSignupRole("cashier");
+              setSignupModalOpen(true);
+            }}
             type="button"
           >
-            Don't have an account? Signup
-          </button>
+            Cashier
+          </Button>
         </div>
 
         <Dialog open={signupmodalOpen} onClose={signupmodalClose} maxWidth="sm" fullWidth>
           <form onSubmit={handleSignupBtn}>
-            <DialogTitle>Signup</DialogTitle>
+            <DialogTitle>
+              Signup as {signupRole.charAt(0).toUpperCase() + signupRole.slice(1)}
+            </DialogTitle>
             <DialogContent>
               <TextField
                 inputRef={nameRef}
