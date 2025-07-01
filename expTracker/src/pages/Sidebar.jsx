@@ -35,7 +35,7 @@ function Sidebar() {
   return (
     <div className="navbar">
       <div className="head">
-        <p className="headtext">EXPTracker</p>
+        <p className="headtext">Staff</p>
       </div>
 
       <div className="navbarlink">
