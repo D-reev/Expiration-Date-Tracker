@@ -10,8 +10,8 @@ const bcrypt = require("bcrypt");
 require('dotenv').config(); // loads .env
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb://localhost:27017/exptracker")
-  .then(() => console.log("✅ MongoDB (local) connected"))
+mongoose.connect("mongodb+srv://dreev:Arvin132666708@cluster0.blxtffa.mongodb.net/")
+  .then(() => console.log("✅ MongoDB (atlas) connected"))
   .catch(err => console.error("❌ MongoDB error:", err));
 
 const app = express();
@@ -21,7 +21,7 @@ app.use(express.json());
 const server = http.createServer(app); 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173", 
+        origin: "http://192.168.0.120:5173", 
         methods: ["GET", "POST", "PUT", "DELETE"]
     },
 });
