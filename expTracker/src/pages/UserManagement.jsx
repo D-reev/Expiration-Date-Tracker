@@ -8,6 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import "./UserManagement.css";
 import axios from "axios";
+import { API_BASE } from "../apiConfig.js";
 
 function UserManagement({ currentUser }) {
   const [users, setUsers] = useState([]);
@@ -44,7 +45,7 @@ function UserManagement({ currentUser }) {
   }, []);
 
   async function fetchUsers() {
-    const res = await axios.get("http://localhost:1337/users");
+    const res = await axios.get(`${API_BASE}/users`);
     setUsers(res.data);
   }
 
@@ -59,7 +60,7 @@ function UserManagement({ currentUser }) {
       alert("Name and Email are required");
       return;
     }
-    await axios.post("http://localhost:1337/users", newUser);
+    await axios.post(`${API_BASE}/users`, newUser);
     fetchUsers();
     setOpenModalAdd(false);
   }
@@ -76,7 +77,7 @@ function UserManagement({ currentUser }) {
   };
 
   async function handleEditUser() {
-    await axios.put(`http://localhost:1337/users/${selectedUser.userid}`, editFormData);
+    await axios.put(`${API_BASE}/users/${selectedUser.userid}`, editFormData);
     fetchUsers();
     setOpenModalEdit(false);
   }
@@ -87,7 +88,7 @@ function UserManagement({ currentUser }) {
   };
 
   async function handleDeleteUser() {
-    await axios.delete(`http://localhost:1337/users/${selectedUser.userid}`);
+    await axios.delete(`${API_BASE}/users/${selectedUser.userid}`);
     fetchUsers();
     setOpenModalDelete(false);
   }

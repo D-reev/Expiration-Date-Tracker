@@ -5,8 +5,9 @@ import Sidebar from "./Sidebar";
 import { Card, CardContent, Typography, Snackbar, Alert, Modal, Box, Button, Fab } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "./ExpiredProducts.css";
+import { API_BASE } from "../apiConfig.js";
 
-const socket = io("http://localhost:1337");
+const socket = io(`${API_BASE}`);
 
 function ExpiredProducts() {
     const [expiredProducts, setExpiredProducts] = useState([]);
@@ -16,7 +17,7 @@ function ExpiredProducts() {
 
     const fetchExpiredProducts = async () => {
         try {
-            const response = await axios.get("http://localhost:1337/fetchexpiredproducts");
+            const response = await axios.get(`${API_BASE}/fetchexpiredproducts`);
             setExpiredProducts(response.data);
         } catch (error) {
             console.error("Error fetching expired products:", error);
@@ -60,7 +61,7 @@ function ExpiredProducts() {
     const handleDeleteCrossedOut = async () => {
         const crossedOutIds = Object.keys(crossedOut).filter((id) => crossedOut[id]);
         try {
-            await axios.post("http://localhost:1337/deleteexpiredproducts", { ids: crossedOutIds });
+            await axios.post(`${apiConfig}/deleteexpiredproducts`, { ids: crossedOutIds });
             setExpiredProducts((prev) => prev.filter((product) => !crossedOut[product._id]));
             setCrossedOut({});
             setIsDeleteModalOpen(false);

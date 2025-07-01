@@ -6,6 +6,7 @@ import AlarmOffIcon from '@mui/icons-material/AlarmOff';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
+import { API_BASE } from "../apiConfig.js";
 
 function Home() {
     const navigate = useNavigate();
@@ -23,7 +24,7 @@ function Home() {
         const fetchRecentProducts = async () => {
             const today = new Date().toISOString().slice(0, 10);
             try {
-                const response = await fetch('http://localhost:1337/fetchproductsmongo');
+                const response = await fetch(`${API_BASE}/fetchproductsmongo`);
                 const data = await response.json();
                 // Filter products where added_date is today
                 const filtered = data.filter(

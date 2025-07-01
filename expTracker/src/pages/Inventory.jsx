@@ -24,6 +24,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import Autocomplete from '@mui/material/Autocomplete';
 import categories from '../assets/categories.js';
+import { API_BASE } from "../apiConfig.js";
+
 function Inventory() {
 
     const [products, setProducts] = useState([]);
@@ -72,7 +74,7 @@ function Inventory() {
 
     async function fetchProducts() {
       try {
-        const response = await axios.get("http://localhost:1337/fetchproductsmongo");
+        const response = await axios.get(`${API_BASE}/fetchproductsmongo`);
         if (response.status === 200) {
           setProducts(response.data); 
         } else {
@@ -132,7 +134,7 @@ function Inventory() {
         }
 
 
-        await axios.post("http://localhost:1337/addproductmongo", newProduct);
+        await axios.post(`${apiConfig}/addproductmongo`, newProduct);
         fetchProducts(); 
         resetForm(); 
         setOpenModalAdd(false); 
@@ -155,7 +157,7 @@ function Inventory() {
       console.log("Deleting product with prodid:", selectedProduct.prodid); // Debugging
   
       try {
-          await axios.delete(`http://localhost:1337/deleteproductmongo/${selectedProduct.prodid}`);
+          await axios.delete(`${apiConfig}/deleteproductmongo/${selectedProduct.prodid}`);
 
           fetchProducts();
 
@@ -190,7 +192,7 @@ function Inventory() {
     async function handleEditProduct() {
       try {
         await axios.put(
-          (`http://localhost:1337/updateproductmongo/${selectedProduct.prodid}`), 
+          (`${apiConfig}/updateproductmongo/${selectedProduct.prodid}`), 
           editFormData
         );
         

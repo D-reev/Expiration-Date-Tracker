@@ -10,8 +10,9 @@ import UserManagement from "./pages/UserManagement";
 import AdminLogs from "./pages/AdminLogs";
 import Cashier from "./pages/Cashier";
 import axios from "axios";
+import { API_BASE } from "./apiConfig.js";
 
-const socket = io("http://localhost:1337");
+const socket = io(`${API_BASE}`);
 
 function App() {
     const [notification, setNotification] = useState(null);
@@ -33,7 +34,7 @@ function App() {
         if (currentUser && currentUser.role === "employee") {
             async function fetchExpiredCount() {
                 try {
-                    const response = await axios.get("http://localhost:1337/expiredproducts/count");
+                    const response = await axios.get(`${API_BASE}/expiredproducts/count`);
                     setExpiredCount(response.data.count || 0);
                     if (response.data.count > 0) {
                         setExpiredModalOpen(true);

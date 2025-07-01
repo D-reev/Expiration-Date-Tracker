@@ -21,12 +21,12 @@ app.use(express.json());
 const server = http.createServer(app); 
 const io = new Server(server, {
     cors: {
-        origin: "http://192.168.0.120:5173", 
+        origin: "*", 
         methods: ["GET", "POST", "PUT", "DELETE"]
     },
 });
 
-const port = 1337;
+const port = 5000;
 
 function logProductData(action, product) {
     console.log(`${action} Product:`);

@@ -27,6 +27,7 @@ import {
 } from "@mui/icons-material";
 import Sidebar from './Sidebar';
 import './AdminLogs.css';
+import { API_BASE } from "../apiConfig.js";
 
 function AdminLogs() {
   const [logs, setLogs] = useState([]);
@@ -44,7 +45,7 @@ function AdminLogs() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get("http://localhost:1337/logs");
+      const response = await axios.get(`${API_BASE}/logs`);
       if (response.status === 200) {
         setLogs(response.data);
       } else {
@@ -72,7 +73,7 @@ function AdminLogs() {
     if (!selectedLog) return;
 
     try {
-      await axios.delete(`http://localhost:1337/logs/${selectedLog._id}`);
+      await axios.delete(`${API_BASE}/logs/${selectedLog._id}`);
       fetchLogs();
       closeModalDelete();
     } catch (error) {

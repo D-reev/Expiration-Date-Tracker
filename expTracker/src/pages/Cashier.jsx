@@ -14,6 +14,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import categories from "../assets/categories";
 import axios from "axios";
+import { API_BASE } from "../apiConfig.js";
 
 function Cashier() {
   const [products, setProducts] = useState([]);
@@ -27,7 +28,7 @@ function Cashier() {
 
   async function fetchProducts() {
     try {
-      const response = await axios.get("http://localhost:1337/fetchproductsmongo");
+      const response = await axios.get(`${API_BASE}/fetchproductsmongo`);
       setProducts(response.data);
     } catch (error) {
       setProducts([]);

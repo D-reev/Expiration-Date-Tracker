@@ -10,6 +10,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import axios from "axios";
+import { API_BASE } from "../apiConfig.js";
 
 function Login({ setCurrentUser }) {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ function Login({ setCurrentUser }) {
   async function handleLoginBtn(e) {
     if (e) e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:1337/login", {
+      const response = await axios.post(`${API_BASE}/login`, {
         email,
         password,
       });
@@ -79,7 +80,7 @@ function Login({ setCurrentUser }) {
     }
 
     try {
-      await axios.post("http://localhost:1337/signup", newUser);
+      await axios.post(`${apiConfig}/signup`, newUser);
       alert("User successfully registered! You can now log in.");
       resetForm();
     } catch (error) {
