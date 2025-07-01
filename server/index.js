@@ -73,7 +73,7 @@ app.post("/addproductmongo", async (req, res) => {
             added_date: formattedAddedDate,
             notification_sent,
         });
-
+        //test
             await createLog(
             "add", 
             newProduct.prodid, 
