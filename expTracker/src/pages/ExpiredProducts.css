@@ -111,3 +111,22 @@
     opacity: 0.5;
   }
 }
+
+/* Add to your ExpiredProducts.css or global styles */
+.back-dashboard-btn {
+  background: #dad7cd !important;
+  color: #3a5a40 !important;
+  border: 1.5px solid #a3b18a !important;
+  font-weight: 700 !important;
+  font-size: 1.1rem !important;
+  border-radius: 10px !important;
+  text-transform: none !important;
+  letter-spacing: 0.5px !important;
+  padding: 8px 28px !important;
+  box-shadow: none !important;
+}
+.back-dashboard-btn:hover {
+  background: #a3b18a !important;
+  color: #344e41 !important;
+  border-color: #588157 !important;
+}

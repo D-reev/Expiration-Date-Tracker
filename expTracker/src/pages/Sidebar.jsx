@@ -1,22 +1,17 @@
 import React, { useState } from 'react'; 
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import "./Sidebar.css";
 import { Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import AlarmOffIcon from '@mui/icons-material/AlarmOff';
 import LogoutIcon from '@mui/icons-material/Logout';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import AlarmOffIcon from '@mui/icons-material/AlarmOff';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import WarningIcon from '@mui/icons-material/Warning';
-import ReorderIcon from '@mui/icons-material/Reorder';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 function Sidebar() {
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate(); 
-
-  // Get current user from localStorage
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const location = useLocation();
 
   const closeModal = () => setOpenModal(false);
 
@@ -27,100 +22,91 @@ function Sidebar() {
     window.location.reload();
   }
 
-  // Only admin can access user management
-  function handleUserManagement() {
-    navigate("/usermanagement");
-  }
+  const isInventory = location.pathname === "/inventory";
+  const isExpired = location.pathname === "/expiredproducts";
+  const isDashboard = location.pathname === "/dashboard";
 
   return (
-    <div className="navbar">
-      <div className="head">
-        <p className="headtext">Staff</p>
-      </div>
+    <div className={`navbar${isDashboard ? " expanded" : ""}`}>
+      {/* Remove Back to Dashboard button from sidebar for inventory */}
+      {!isInventory && !isExpired && (
+        <div className="head">
+          <p className="headtext">Staff</p>
+        </div>
+      )}
 
-      <div className="navbarlink">
-        {currentUser && currentUser.role === "cashier" ? (
-          <>
-            <NavLink
-              to="/cashier"
-              className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
-            >
-              <ShoppingCartIcon className="icon" />
-              Cashier
-            </NavLink>
-            <div
-              onClick={() => setOpenModal(true)}
-              className="nav-item logout-bottom"
-            >
-              <LogoutIcon className="icon" />
-              Logout
-            </div>
-          </>
-        ) : (
+      <div className="navbarlink" style={{ flex: 1 }}>
+        {isDashboard && (
           <>
             <NavLink
               to="/dashboard"
               className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
             >
               <DashboardIcon className="icon" />
-              Dashboard
+              <span className="nav-text">Dashboard</span>
             </NavLink>
-
-            <NavLink
-              to="/inventory"
-              className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
-            >
-              <InventoryIcon className="icon" />
-              Inventory
-            </NavLink>
-
-            <NavLink
-              to="/cashier"
-              className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
-              style={{ display: currentUser && currentUser.role === "cashier" ? "flex" : "none" }}
-            >
-              <ShoppingCartIcon className="icon" />
-              Cashier
-            </NavLink>
-
-            <NavLink
-              to="/expiredproducts"
-              className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
-            >
-              <AlarmOffIcon className="icon" />
-              Expired Products
-            </NavLink>
-            
-            {currentUser && currentUser.role === "admin" && (
-              <NavLink
-                to="/usermanagement"
-                className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
-              >
-                <PersonAddIcon className='icon'/>
-                User Management
-              </NavLink>
-            )}
-
-            {currentUser && currentUser.role === "admin" && (
-              <NavLink
-                to="/adminlogs"
-                className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
-              >
-                <ReorderIcon className='icon'/>
-                Logs
-              </NavLink>
-            )}
-
             <div
               onClick={() => setOpenModal(true)}
               className="nav-item logout-bottom"
+              style={{ marginTop: 0 }}
             >
               <LogoutIcon className="icon" />
-              Logout
+              <span className="nav-text">Logout</span>
             </div>
           </>
         )}
       </div>
+
+      {/* Bottom icons for inventory */}
+      {isInventory && (
+        <div className="sidebar-bottom-icons">
+          <NavLink
+            to="/expiredproducts"
+            className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
+          >
+            <AlarmOffIcon className="icon" />
+            <span className="nav-text">Expired Products</span>
+          </NavLink>
+          <div
+            onClick={() => setOpenModal(true)}
+            className="nav-item logout-bottom"
+          >
+            <LogoutIcon className="icon" />
+            <span className="nav-text">Logout</span>
+          </div>
+        </div>
+      )}
+
+      {/* Bottom icons for expiredproducts */}
+      {isExpired && (
+        <div className="sidebar-bottom-icons">
+          <NavLink
+            to="/inventory"
+            className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
+          >
+            <InventoryIcon className="icon" />
+            <span className="nav-text">Inventory</span>
+          </NavLink>
+          <div
+            onClick={() => setOpenModal(true)}
+            className="nav-item logout-bottom"
+          >
+            <LogoutIcon className="icon" />
+            <span className="nav-text">Logout</span>
+          </div>
+        </div>
+      )}
+
+      {/* Logout icon for other pages */}
+      {!isInventory && !isExpired && !isDashboard && (
+        <div
+          onClick={() => setOpenModal(true)}
+          className="nav-item logout-bottom"
+        >
+          <LogoutIcon className="icon" />
+          <span className="nav-text">Logout</span>
+        </div>
+      )}
       
       <Dialog open={openModal} onClose={closeModal}>
         <div className='card'>
@@ -142,3 +128,9 @@ function Sidebar() {
 }
 
 export default Sidebar;
+
+<div className="inventory-container">
+  <Sidebar />
+  <div className="inventory-content">
+  </div>
+</div>

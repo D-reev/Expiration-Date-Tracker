@@ -1,4 +1,4 @@
-/* Custom Green Palette */
+/* Formal & Classy Green Palette */
 :root {
   --main-dark: #344e41;
   --main-medium-dark: #3a5a40;
@@ -8,26 +8,49 @@
 }
 
 .navbar {
+  display: flex;
+  flex-direction: column;
   height: 100vh;
-  width: 300px;
+  width: 70px;
   position: fixed;
   top: 0;
   left: 0;
   background-color: var(--main-dark);
   color: var(--main-very-light);
-  display: flex;
-  flex-direction: column;
-  padding-top: 20px;
+  padding-top: 32px;
+  border-right: 2px solid var(--main-light);
+  box-shadow: 2px 0 12px rgba(52, 78, 65, 0.06);
+  transition: width 0.25s cubic-bezier(.4,0,.2,1);
+  overflow-x: hidden;
+}
+
+/* Only expand on hover if .expand-on-hover is present */
+.expand-on-hover:hover {
+  width: 270px;
+  box-shadow: 2px 0 16px rgba(52, 78, 65, 0.10);
+  z-index: 10;
 }
 
 .head {
-  font-weight: bold;
+  font-weight: 700;
   color: var(--main-light);
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 28px;
-  margin-bottom: 20px;
+  font-size: 1.7rem;
+  margin-bottom: 32px;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 0 var(--main-very-light, 0.1);
+}
+
+.headtext {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+/* Only show headtext on hover if .expand-on-hover is present */
+.expand-on-hover:hover .headtext {
+  opacity: 1;
 }
 
 .navbarlink {
@@ -41,61 +64,83 @@
   align-items: center;
   text-decoration: none;
   color: var(--main-very-light);
-  padding: 15px 20px;
-  border-radius: 10px;
-  margin: 5px 10px;
+  padding: 14px 28px;
+  border-radius: 8px;
+  margin: 4px 12px;
   background: none;
-  transition: background-color 0.3s, color 0.2s, transform 0.2s, box-shadow 0.2s;
+  font-size: 1.08rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
   position: relative;
 }
 
+.nav-item span, .nav-item .nav-text {
+  opacity: 0;
+  transition: opacity 0.2s, margin 0.2s;
+  margin-left: -8px;
+  white-space: nowrap;
+}
+
+/* Only show nav-text on hover if .expand-on-hover is present */
+.expand-on-hover:hover .nav-item span,
+.expand-on-hover:hover .nav-item .nav-text {
+  opacity: 1;
+  margin-left: 0;
+}
+
 .nav-item .icon {
-  margin-right: 10px;
-  font-size: 1.5rem;
-  color: var(--main-light);
+  margin-right: 0;
+  transition: margin 0.2s;
+}
+
+.expand-on-hover:hover .nav-item .icon {
+  margin-right: 14px;
 }
 
 .nav-item:hover:not(.active) {
-  background-color: var(--main-medium);
+  background: var(--main-medium);
   color: var(--main-very-light);
-  transform: scale(1.05);
-  box-shadow: 2px 2px 5px rgba(52, 78, 65, 0.15);
+  transform: translateX(4px) scale(1.03);
+}
+
+.nav-item:hover:not(.active) .icon {
+  color: var(--main-very-light);
 }
 
 .nav-item.active {
-  background-color: var(--main-medium-dark);
+  background: var(--main-medium-dark);
   color: var(--main-very-light);
-  font-weight: bold;
-  transform: scale(1.05);
-  box-shadow: 2px 2px 5px rgba(52, 78, 65, 0.18);
+  font-weight: 700;
+  transform: translateX(6px) scale(1.04);
+  border-left: 5px solid var(--main-light);
 }
 
 .nav-item.active .icon {
-  color: var(--main-very-light);
-}
-
-.nav-item.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 10%;
-  bottom: 10%;
-  width: 6px;
-  border-radius: 5px;
-  background-color: var(--main-light);
-  box-shadow: 0 0 10px var(--main-light, 0.7);
+  color: var(--main-light);
 }
 
 .logout-bottom {
   margin-top: auto;
   color: var(--main-very-light);
-  font-weight: bold;
-  transition: background-color 0.3s, transform 0.2s;
+  font-weight: 600;
+  padding: 14px 28px;
+  border-radius: 8px;
+  margin: 18px 12px 24px 12px;
+  background: none;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+  cursor: pointer;
+  border: none;
+  font-size: 1.08rem;
+  letter-spacing: 0.5px;
+  width: 100%;
+  justify-content: flex-start;
 }
 
 .logout-bottom:hover {
-  background-color: var(--main-medium);
-  transform: scale(1.05);
+  background: var(--main-medium);
+  color: var(--main-very-light);
+  transform: translateX(4px) scale(1.03);
 }
 
 .card {
@@ -104,7 +149,7 @@
   border-radius: 0.5rem;
   width: 320px;
   padding: 1.5rem 1rem;
-  box-shadow: 0 20px 25px -5px rgba(52, 78, 65, 0.1), 0 10px 10px -5px rgba(52, 78, 65, 0.04);
+  box-shadow: 0 8px 18px -5px rgba(52, 78, 65, 0.08), 0 4px 8px -5px rgba(52, 78, 65, 0.03);
   margin: auto;
   text-align: center;
 }
@@ -122,14 +167,14 @@
 
 .card .title {
   color: var(--main-medium-dark);
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
 .card .message {
   color: var(--main-medium-dark);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   margin-bottom: 1.5rem;
 }
 
@@ -143,22 +188,126 @@
   background-color: var(--main-very-light);
   color: var(--main-dark);
   border: 1px solid var(--main-light);
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
 }
 
 .card .cancel:hover {
   background-color: var(--main-light);
   color: var(--main-dark);
-  transform: scale(1.02);
 }
 
 .card .logout {
   background-color: var(--main-medium-dark);
   color: var(--main-very-light);
   border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
 }
 
 .card .logout:hover {
   background-color: var(--main-medium);
   color: var(--main-very-light);
-  transform: scale(1.02);
+}
+
+/* Always expanded on dashboard */
+.navbar.expanded {
+  width: 270px;
+  box-shadow: 2px 0 16px rgba(52, 78, 65, 0.10);
+  z-index: 10;
+}
+
+/* Show text and move icon when expanded */
+.navbar.expanded .headtext,
+.navbar.expanded .nav-item span,
+.navbar.expanded .nav-item .nav-text {
+  opacity: 1;
+  margin-left: 0;
+  pointer-events: auto;
+}
+.navbar.expanded .nav-item .icon {
+  margin-right: 14px;
+}
+
+/* Collapsed: center icon, hide text */
+.navbar:not(.expanded) .nav-item {
+  justify-content: center;
+}
+.navbar:not(.expanded) .nav-item .icon {
+  margin-right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.navbar:not(.expanded) .nav-item span,
+.navbar:not(.expanded) .nav-item .nav-text,
+.navbar:not(.expanded) .headtext {
+  opacity: 0;
+  margin-left: -8px;
+  pointer-events: none;
+}
+
+/* Center the logout icon when sidebar is collapsed */
+.navbar:not(.expanded) .logout-bottom {
+  justify-content: center !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  text-align: center;
+}
+
+/* Hide the text label when collapsed */
+.navbar:not(.expanded) .logout-bottom .nav-text {
+  display: none;
+}
+
+/* Remove hover effect for logout in collapsed mode */
+.navbar:not(.expanded) .logout-bottom:hover {
+  background: none;
+  color: var(--main-very-light);
+  transform: none;
+  cursor: pointer;
+}
+
+/* When expanded, show text and allow hover effect */
+.navbar.expanded .logout-bottom {
+  justify-content: flex-start;
+  padding-left: 28px;
+  padding-right: 28px;
+}
+
+.navbar.expanded .logout-bottom .nav-text {
+  display: inline;
+}
+
+.navbar.expanded .logout-bottom:hover {
+  background: var(--main-medium);
+  color: var(--main-very-light);
+  transform: translateX(4px) scale(1.03);
+}
+
+/* Bottom icons container for inventory page */
+.sidebar-bottom-icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  margin-top: auto;
+  margin-bottom: 10vh; 
+}
+
+.sidebar-bottom-icons .nav-item {
+  width: 100%;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-bottom-icons .nav-item .nav-text {
+  display: none;
 }

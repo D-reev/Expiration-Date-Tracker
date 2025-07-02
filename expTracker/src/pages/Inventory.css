@@ -1,124 +1,342 @@
+/* Color Palette Variables */
 :root {
-  --main-medium-dark: #3a5a40;
-  --main-medium: #588157;
-  --main-light: #a3b18a;
-  --main-very-light: #dad7cd;
-  --main-font: 'Inter', 'Segoe UI', Arial, sans-serif;
+  --primary-dark: #344e41;
+  --primary-medium: #3a5a40;
+  --primary-light: #588157;
+  --secondary: #a3b18a;
+  --background: #dad7cd;
+  --white: #ffffff;
+  --text-primary: #2c3e2d;
+  --text-secondary: #5a6c5b;
+  --shadow-light: rgba(52, 78, 65, 0.1);
+  --shadow-medium: rgba(52, 78, 65, 0.15);
+  --shadow-dark: rgba(52, 78, 65, 0.25);
 }
 
-body, .inventory-container, .content {
-  font-family: var(--main-font);
-}
-
+/* Main Container */
 .inventory-container {
-  margin-left: 300px;
   display: flex;
   min-height: 100vh;
-  background: var(--main-very-light);
+  background: linear-gradient(135deg, var(--background) 0%, #f8f6f0 100%);
 }
 
-.content {
-  flex-grow: 1;
-  padding: 30px;
-  min-width: 0;
+/* Content Area */
+.inventory-content {
+  flex: 1;
+  min-height: 100vh;
+  padding: 2rem; /* uniform padding, no margin */
+  background: none;
+  margin: 0;
   box-sizing: border-box;
+  overflow-x: auto;
+  max-width: 100%;
 }
 
+/* Header Section */
 .inventory-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 28px;
-  margin-top: 40px;
-  background: #fff;
-  padding: 18px 24px;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 3px solid var(--primary-medium);
+  background: var(--white);
+  padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(58,90,64,0.08);
+  box-shadow: 0 4px 20px var(--shadow-light);
 }
 
 .inventory-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--main-medium-dark);
-  margin: 0;
+  color: var(--primary-dark) !important;
+  font-weight: 700 !important;
+  font-size: 2.2rem !important;
+  letter-spacing: -0.5px;
+  text-shadow: 1px 1px 2px var(--shadow-light);
 }
 
+/* Add Product Button */
 .add-product-btn {
-  font-weight: 600;
-  letter-spacing: 1px;
-  background: var(--main-medium);
-  color: #fff;
+  background: linear-gradient(45deg, var(--primary-medium) 30%, var(--primary-light) 90%) !important;
+  color: var(--white) !important;
+  padding: 12px 32px !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  border-radius: 8px !important;
+  text-transform: none !important;
+  box-shadow: 0 4px 12px var(--shadow-medium) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border: none !important;
 }
 
-.MuiTableContainer-root {
-  background: #fff;
+.add-product-btn:hover {
+  background: linear-gradient(45deg, var(--primary-dark) 30%, var(--primary-medium) 90%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--shadow-dark) !important;
+}
+
+/* Table Container */
+.inventory-table-container {
+  background: var(--white);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(58,90,64,0.08);
-  margin-bottom: 32px;
+  box-shadow: 0 8px 32px var(--shadow-medium);
+  overflow: hidden;
+  border: 1px solid var(--secondary);
 }
 
-.MuiTableHead-root th {
-  background: var(--main-medium-dark) !important;
-  color: #fff !important;
+/* Table Styling */
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.inventory-table thead {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+  color: var(--white);
+}
+
+.inventory-table thead th {
+  padding: 1.25rem 1rem;
+  text-align: left;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 3px solid var(--primary-light);
+  position: relative;
 }
 
-.MuiTableBody-root td {
-  font-size: 1rem;
-  color: #222;
+.inventory-table thead th:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 25%;
+  height: 50%;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.2);
 }
 
-.MuiTableRow-root:nth-child(even) td {
-  background: var(--main-light);
+.inventory-table tbody td {
+  padding: 1rem;
+  border-bottom: 1px solid #e8e5e0;
+  vertical-align: middle;
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
-.MuiTableRow-root:hover td {
-  background: var(--main-medium);
-  color: #fff;
+/* Row Styling */
+.inventory-table tbody tr.row-even {
+  background-color: var(--white);
 }
 
-.MuiDialog-paper {
+.inventory-table tbody tr.row-odd {
+  background-color: #fafaf8;
+}
+
+.inventory-table tbody tr:hover {
+  background-color: rgba(163, 177, 138, 0.08);
+  transform: scale(1.001);
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+/* Special Cell Styling */
+.product-name {
+  font-weight: 600 !important;
+  color: var(--primary-dark) !important;
+}
+
+.quantity {
+  font-weight: 600 !important;
+  color: var(--primary-medium) !important;
+  text-align: center;
+}
+
+.actions-cell {
+  text-align: center !important;
+}
+
+.no-products {
+  text-align: center !important;
+  color: var(--text-secondary) !important;
+  font-style: italic;
+  padding: 3rem !important;
+  font-size: 1.1rem;
+}
+
+/* Action Buttons */
+.edit-btn {
+  background-color: var(--primary-light) !important;
+  color: var(--white) !important;
+  margin-right: 0.5rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.edit-btn:hover {
+  background-color: var(--primary-medium) !important;
+  transform: scale(1.1);
+}
+
+.delete-btn {
+  background-color: #dc3545 !important;
+  color: var(--white) !important;
+  transition: all 0.2s ease !important;
+}
+
+.delete-btn:hover {
+  background-color: #c82333 !important;
+  transform: scale(1.1);
+}
+
+/* Dialog Styling */
+.inventory-dialog .MuiDialog-paper {
   border-radius: 16px !important;
+  box-shadow: 0 16px 48px var(--shadow-dark) !important;
+  border: 1px solid var(--secondary) !important;
 }
 
-.MuiDialogTitle-root {
-  font-weight: 700;
-  color: var(--main-medium-dark);
+.dialog-title {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%) !important;
+  color: var(--white) !important;
+  padding: 1.5rem 2rem !important;
+  font-weight: 600 !important;
+  font-size: 1.3rem !important;
+  letter-spacing: 0.3px;
 }
 
-.MuiDialogActions-root {
-  padding-bottom: 20px;
+.dialog-title.delete-title {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
 }
 
-.MuiButton-containedPrimary {
-  background: var(--main-medium-dark) !important;
-  color: #fff !important;
+.dialog-content {
+  padding: 2rem !important;
+  background: linear-gradient(180deg, var(--white) 0%, #fafaf8 100%) !important;
 }
 
-.MuiButton-containedPrimary:hover {
-  background: var(--main-medium) !important;
+/* Form Fields */
+.form-field {
+  margin-bottom: 1rem !important;
 }
 
-.MuiButton-containedError {
-  background: #e74c3c !important;
+.form-field .MuiOutlinedInput-root {
+  border-radius: 8px !important;
+  background: var(--white);
+  transition: all 0.3s ease !important;
 }
 
-.MuiButton-containedError:hover {
-  background: #c0392b !important;
+.form-field .MuiOutlinedInput-root:hover {
+  box-shadow: 0 2px 8px var(--shadow-light);
 }
 
-@media (max-width: 900px) {
-  .inventory-container {
-    margin-left: 0;
-  }
-  .content {
-    padding: 15px;
-  }
-  .inventory-header {
-    flex-direction: column;
-    gap: 16px;
-    padding: 12px 8px;
-  }
+.form-field .MuiOutlinedInput-root.Mui-focused {
+  box-shadow: 0 4px 12px var(--shadow-medium);
 }
 
+.form-field .MuiOutlinedInput-notchedOutline {
+  border-color: var(--secondary) !important;
+  border-width: 1.5px !important;
+}
+
+.form-field .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--primary-medium) !important;
+  border-width: 2px !important;
+}
+
+.form-field .MuiInputLabel-root {
+  color: var(--text-secondary) !important;
+  font-weight: 500 !important;
+}
+
+.form-field .MuiInputLabel-root.Mui-focused {
+  color: var(--primary-medium) !important;
+}
+
+/* Dialog Actions */
+.dialog-actions {
+  padding: 1.5rem 2rem !important;
+  background: #f8f6f0 !important;
+  border-top: 1px solid var(--secondary) !important;
+}
+
+.cancel-btn {
+  color: var(--text-secondary) !important;
+  border-color: var(--secondary) !important;
+  padding: 10px 24px !important;
+  font-weight: 500 !important;
+  border-radius: 6px !important;
+  text-transform: none !important;
+  margin-right: 1rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.cancel-btn:hover {
+  background-color: var(--secondary) !important;
+  color: var(--white) !important;
+  border-color: var(--secondary) !important;
+}
+
+.submit-btn {
+  background: linear-gradient(45deg, var(--primary-medium) 30%, var(--primary-light) 90%) !important;
+  color: var(--white) !important;
+  padding: 10px 24px !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  text-transform: none !important;
+  box-shadow: 0 3px 8px var(--shadow-medium) !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(45deg, var(--primary-dark) 30%, var(--primary-medium) 90%) !important;
+  box-shadow: 0 4px 12px var(--shadow-dark) !important;
+  transform: translateY(-1px);
+}
+
+.delete-confirm-btn {
+  background: linear-gradient(45deg, #dc3545 30%, #c82333 90%) !important;
+  color: var(--white) !important;
+  padding: 10px 24px !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  text-transform: none !important;
+  box-shadow: 0 3px 8px rgba(220, 53, 69, 0.3) !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.delete-confirm-btn:hover {
+  background: linear-gradient(45deg, #c82333 30%, #a71e2a 90%) !important;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4) !important;
+  transform: translateY(-1px);
+}
+
+/* Delete Message Styling */
+.delete-message {
+  color: var(--text-primary) !important;
+  font-size: 1.1rem !important;
+  line-height: 1.6 !important;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.delete-warning {
+  color: #dc3545 !important;
+  font-size: 0.9rem !important;
+  font-style: italic;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+
+/* Focus States for Accessibility */
+.add-product-btn:focus,
+.edit-btn:focus,
+.delete-btn:focus,
+.submit-btn:focus,
+.cancel-btn:focus,
+.delete-confirm-btn:focus {
+  outline: 2px solid var(--primary-light);
+  outline-offset: 2px;
+}

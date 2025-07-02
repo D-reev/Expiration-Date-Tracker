@@ -10,8 +10,12 @@ const bcrypt = require("bcrypt");
 require('dotenv').config(); // loads .env
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb+srv://dreev:Arvin132666708@cluster0.blxtffa.mongodb.net/")
-  .then(() => console.log("✅ MongoDB (atlas) connected"))
+// Connect to local MongoDB (as shown in Compass)
+mongoose.connect("mongodb://localhost:27017/serna", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => console.log("✅ MongoDB (local) connected"))
   .catch(err => console.error("❌ MongoDB error:", err));
 
 const app = express();

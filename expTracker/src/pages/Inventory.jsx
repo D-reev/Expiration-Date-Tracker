@@ -1,4 +1,4 @@
-import React, { use, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import './Inventory.css';
 import {
   Typography,
@@ -8,24 +8,20 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   IconButton,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Sidebar from './Sidebar';
 import { useState } from 'react';
 import axios from 'axios';
 import Autocomplete from '@mui/material/Autocomplete';
 import categories from '../assets/categories.js';
-function Inventory() {
+import { useNavigate } from 'react-router-dom';
 
+function Inventory() {
     const [products, setProducts] = useState([]);
     const [openModalAdd, setOpenModalAdd] = useState(false);
     const closeModalAdd = () => setOpenModalAdd(false);
@@ -49,7 +45,6 @@ function Inventory() {
       notification_sent: false
     });
 
-
     const prodidRef = useRef();
     const prodnameRef = useRef();
     const categoryRef = useRef();
@@ -58,6 +53,7 @@ function Inventory() {
     const expiry_dateRef = useRef();
     const added_dateRef = useRef();
     const notification_sentRef = useRef();  
+    const navigate = useNavigate();
     
     const resetForm = () => {
       [prodidRef, prodnameRef, categoryRef, quantityRef, unitRef, expiry_dateRef, added_dateRef].forEach(ref => {
@@ -125,12 +121,10 @@ function Inventory() {
           return;
         };
 
-
         if (!newProduct.quantity.match(/^[0-9]+$/)) {
           alert("Please enter a valid quantity");
           return;
         }
-
 
         await axios.post("http://localhost:1337/addproductmongo", newProduct);
         fetchProducts(); 
@@ -152,13 +146,11 @@ function Inventory() {
           return;
       }
   
-      console.log("Deleting product with prodid:", selectedProduct.prodid); // Debugging
+      console.log("Deleting product with prodid:", selectedProduct.prodid);
   
       try {
           await axios.delete(`http://localhost:1337/deleteproductmongo/${selectedProduct.prodid}`);
-
           fetchProducts();
-
           closeModalDelete();
       } catch (error) {
           console.error("Error deleting product:", error.message);
@@ -202,64 +194,89 @@ function Inventory() {
     }
     
   return (
-<div className="inventory-container">
+    <div className="inventory-container">
       <Sidebar />
-      <main className="content">
+      <div className="inventory-content">
+        {/* Back to Dashboard Button */}
+        <Button
+          variant="outlined"
+          className="back-dashboard-btn"
+          startIcon={<ArrowBackIcon />}
+          onClick={() => navigate("/dashboard")}
+        >
+          Back to Dashboard
+        </Button>
         
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px", alignItems: 'center', marginTop: '40px' }}>
-          <Typography variant="h4">Inventory</Typography>
-          <Button variant="contained" color="primary" onClick={() => setOpenModalAdd(true)}>
+        <div className="inventory-header">
+          <Typography variant="h4" className="inventory-title">
+            Inventory Management
+          </Typography>
+          <Button 
+            variant="contained" 
+            className="add-product-btn"
+            onClick={() => setOpenModalAdd(true)}
+            startIcon={<AddIcon />}
+          >
             Add Product
           </Button>
         </div>
 
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell><strong>Product ID</strong></TableCell>
-                <TableCell><strong>Product Name</strong></TableCell>
-                <TableCell><strong>Category</strong></TableCell>
-                <TableCell><strong>Quantity</strong></TableCell>
-                <TableCell><strong>Unit</strong></TableCell>
-                <TableCell><strong>Date Added</strong></TableCell>
-                <TableCell><strong>Expiration Date</strong></TableCell>
-                <TableCell><strong>Actions</strong></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+        <div className="inventory-table-container">
+          <table className="inventory-table">
+            <thead>
+              <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Unit</th>
+                <th>Date Added</th>
+                <th>Expiration Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
               {products.length > 0 ? (
-                products.map((product) => (
-                  <TableRow key={product.prodid}>
-                    <TableCell>{product.prodid}</TableCell>
-                    <TableCell>{product.prodname}</TableCell>
-                    <TableCell>{product.category}</TableCell>
-                    <TableCell>{product.quantity}</TableCell>
-                    <TableCell>{product.unit}</TableCell>
-                    <TableCell>{product.expiry_date}</TableCell>
-                    <TableCell>{product.added_date}</TableCell>
-                    <TableCell>
-                      <IconButton color="primary" onClick={() => handleOpenEditModal(product)}>
-                        <EditIcon />
+                products.map((product, index) => (
+                  <tr key={product.prodid} className={index % 2 === 0 ? 'row-even' : 'row-odd'}>
+                    <td>{product.prodid}</td>
+                    <td className="product-name">{product.prodname}</td>
+                    <td>{product.category}</td>
+                    <td className="quantity">{product.quantity}</td>
+                    <td>{product.unit}</td>
+                    <td>{product.added_date}</td>
+                    <td>{product.expiry_date}</td>
+                    <td className="actions-cell">
+                      <IconButton 
+                        className="edit-btn" 
+                        onClick={() => handleOpenEditModal(product)}
+                        size="small"
+                      >
+                        <EditIcon fontSize="small" />
                       </IconButton>
-                      <IconButton color="error" onClick={() => handleOpenDeleteModal(product)}>
-                        <DeleteIcon />
+                      <IconButton 
+                        className="delete-btn" 
+                        onClick={() => handleOpenDeleteModal(product)}
+                        size="small"
+                      >
+                        <DeleteIcon fontSize="small" />
                       </IconButton>
-                    </TableCell>
-                  </TableRow>
+                    </td>
+                  </tr>
                 ))
               ) : (
-                <TableRow>
-                  <TableCell colSpan={8} align="center">No products found</TableCell>
-                </TableRow>
+                <tr>
+                  <td colSpan={8} className="no-products">No products found</td>
+                </tr>
               )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+            </tbody>
+          </table>
+        </div>
 
-        <Dialog open={openModalAdd} onClose={() => setOpenModalAdd(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>Add New Product</DialogTitle>
-          <DialogContent>
+        {/* Add Product Modal */}
+        <Dialog open={openModalAdd} onClose={() => setOpenModalAdd(false)} maxWidth="sm" fullWidth className="inventory-dialog">
+          <DialogTitle className="dialog-title">Add New Product</DialogTitle>
+          <DialogContent className="dialog-content">
             <TextField 
               inputRef={prodnameRef} 
               label="Product Name"
@@ -267,6 +284,7 @@ function Inventory() {
               margin="normal" 
               fullWidth 
               required 
+              className="form-field"
             />
             <Autocomplete
               disablePortal
@@ -274,12 +292,14 @@ function Inventory() {
               fullWidth
               value={selectedCategory}
               onChange={(event, newValue) => setSelectedCategory(newValue)}
+              className="form-field"
               renderInput={(params) => (
                 <TextField
                   {...params}
                   label="Category"
                   inputRef={categoryRef}
                   required
+                  margin="normal"
                 />
               )}
             />
@@ -290,6 +310,7 @@ function Inventory() {
               margin="normal" 
               fullWidth 
               required 
+              className="form-field"
             />
             <TextField 
               inputRef={unitRef} 
@@ -298,6 +319,7 @@ function Inventory() {
               helperText="e.g., kg, g, L, mL"
               margin="normal" 
               fullWidth 
+              className="form-field"
             />
             <TextField            
               inputRef={expiry_dateRef}
@@ -311,6 +333,7 @@ function Inventory() {
               InputLabelProps={{
                 shrink: true,
               }}
+              className="form-field"
             />
             <TextField
               inputRef={added_dateRef}
@@ -324,29 +347,31 @@ function Inventory() {
               InputLabelProps={{
                 shrink: true,
               }}
+              className="form-field"
             />
           </DialogContent>
-          <DialogActions>
+          <DialogActions className="dialog-actions">
             <Button 
               onClick={() => setOpenModalAdd(false)} 
-              variant="contained" 
-              color="error"
+              variant="outlined" 
+              className="cancel-btn"
             >
               Cancel
             </Button>
             <Button 
               variant="contained" 
               onClick={handleAddProduct} 
-              color="primary"
+              className="submit-btn"
             >
               Add Product
             </Button>
           </DialogActions>
         </Dialog>
          
-        <Dialog open={openModalEdit} onClose={() => setOpenModalEdit(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>Edit Product</DialogTitle>
-          <DialogContent>
+        {/* Edit Product Modal */}
+        <Dialog open={openModalEdit} onClose={() => setOpenModalEdit(false)} maxWidth="sm" fullWidth className="inventory-dialog">
+          <DialogTitle className="dialog-title">Edit Product</DialogTitle>
+          <DialogContent className="dialog-content">
             <TextField 
               name="prodid" 
               label="Product ID" 
@@ -355,6 +380,7 @@ function Inventory() {
               fullWidth 
               value={editFormData.prodid} 
               disabled 
+              className="form-field"
             />
             <TextField 
               name="prodname" 
@@ -364,6 +390,7 @@ function Inventory() {
               fullWidth 
               value={editFormData.prodname} 
               onChange={handleEditInputChange} 
+              className="form-field"
             />
             <TextField 
               name="category" 
@@ -373,6 +400,7 @@ function Inventory() {
               fullWidth 
               value={editFormData.category} 
               onChange={handleEditInputChange} 
+              className="form-field"
             />
             <TextField 
               name="quantity" 
@@ -382,6 +410,7 @@ function Inventory() {
               fullWidth 
               value={editFormData.quantity} 
               onChange={handleEditInputChange}
+              className="form-field"
             />
             <TextField 
               name="unit" 
@@ -391,6 +420,7 @@ function Inventory() {
               fullWidth 
               value={editFormData.unit} 
               onChange={handleEditInputChange}
+              className="form-field"
             />
             <TextField
               name="expiry_date"
@@ -404,37 +434,41 @@ function Inventory() {
               InputLabelProps={{
                 shrink: true,
               }}
+              className="form-field"
             />
           </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenModalEdit(false)} variant="contained" color="error">
+          <DialogActions className="dialog-actions">
+            <Button onClick={() => setOpenModalEdit(false)} variant="outlined" className="cancel-btn">
               Cancel
             </Button>
-            <Button variant="contained" onClick={handleEditProduct} color="primary">
+            <Button variant="contained" onClick={handleEditProduct} className="submit-btn">
               Update Product
             </Button>
           </DialogActions>
         </Dialog>
 
-        <Dialog open={openModalDelete} onClose={() => setOpenModalDelete(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>Delete Confirmation</DialogTitle>
-          <DialogContent>
-            <Typography>
+        {/* Delete Confirmation Modal */}
+        <Dialog open={openModalDelete} onClose={() => setOpenModalDelete(false)} maxWidth="sm" fullWidth className="inventory-dialog">
+          <DialogTitle className="dialog-title delete-title">Delete Confirmation</DialogTitle>
+          <DialogContent className="dialog-content">
+            <Typography className="delete-message">
                 Are you sure you want to delete the product <strong>{selectedProduct?.prodname}</strong>?
+                <br />
+                <span className="delete-warning">This action cannot be undone.</span>
             </Typography>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenModalDelete(false)} variant="contained">
+          <DialogActions className="dialog-actions">
+            <Button onClick={() => setOpenModalDelete(false)} variant="outlined" className="cancel-btn">
               Cancel
             </Button>
-            <Button variant="contained" color="error" onClick={handleDeleteProduct}>
+            <Button variant="contained" className="delete-confirm-btn" onClick={handleDeleteProduct}>
               Delete
             </Button>
           </DialogActions>
         </Dialog> 
-      </main>
+      </div>
     </div>
   );
 }
 
-export default Inventory
+export default Inventory;
