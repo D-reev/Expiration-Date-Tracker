@@ -100,102 +100,98 @@ function Login({ setCurrentUser }) {
   };
 
   return (
-    <div className="container">
-      <div className="form-container">
-        <p className="title">Login</p>
-        <form className="input-group" onSubmit={handleLoginBtn}>
-          <TextField
-            className="inputText"
-            type="email"
-            label="Email"
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-
-          <TextField
-            className="inputText"
-            type="password"
-            label="Password"
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-
-          <Button
-            type="submit"
-            variant="contained"
-            className="form-button"
-            style={{ marginTop: 16 }}
-          >
-            Signin
-          </Button>
-        </form>
-
-        <div className="signup">
-          <h1>Sign Up as :</h1>
-          <Button
-            className="signup-button"
-            variant="outlined"
-            onClick={() => {
-              setSignupRole("employee");
-              setSignupModalOpen(true);
-            }}
-            type="button"
-            sx={{ mr: 2 }}
-          >
-            Employee
-          </Button>
-          <Button
-            className="signup-button"
-            variant="outlined"
-            onClick={() => {
-              setSignupRole("cashier");
-              setSignupModalOpen(true);
-            }}
-            type="button"
-          >
-            Cashier
-          </Button>
+    <div className="login-root">
+      <div className="login-left">
+        <img src="/pages/img/eleben.jpg" alt="Space" className="login-bg-img" />
+      </div>
+      <div className="login-right">
+        <div className="login-form-wrapper">
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
+            <img
+              src="/pages/img/home.png"
+              alt="Home"
+              style={{ width: 60, height: 60, borderRadius: "12px", boxShadow: "0 2px 8px rgba(52,78,65,0.12)" }}
+            />
+          </div>
+          <h1 className="login-title">Welcome Back</h1>
+          <p className="login-subtitle">Please Login to Continue</p>
+          <form className="input-group" onSubmit={handleLoginBtn}>
+            <TextField
+              className="inputText"
+              type="email"
+              label="Username or Email"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <TextField
+              className="inputText"
+              type="password"
+              label="Password"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <div className="login-options">
+              <label>
+                <input type="checkbox" /> Remember Me
+              </label>
+              <a href="#" className="forgot-link">Forgot Password?</a>
+            </div>
+            <Button
+              type="submit"
+              variant="contained"
+              className="form-button"
+              style={{ marginTop: 16, width: "100%" }}
+            >
+              Login
+            </Button>
+          </form>
+          <div className="login-divider">
+            <span>or</span>
+          </div>
+          <div className="signup" style={{ textAlign: "center" }}>
+            <h2>Sign Up:</h2>
+            <Button
+              className="signup-button"
+              variant="outlined"
+              onClick={() => {
+                setSignupRole("employee");
+                setSignupModalOpen(true);
+              }}
+              type="button"
+              sx={{ mr: 2 }}
+            >
+              Employee
+            </Button>
+            <Button
+              className="signup-button"
+              variant="outlined"
+              onClick={() => {
+                setSignupRole("cashier");
+                setSignupModalOpen(true);
+              }}
+              type="button"
+            >
+              Cashier
+            </Button>
+          </div>
         </div>
-
         <Dialog open={signupmodalOpen} onClose={signupmodalClose} maxWidth="sm" fullWidth>
           <form onSubmit={handleSignupBtn}>
             <DialogTitle>
               Signup as {signupRole.charAt(0).toUpperCase() + signupRole.slice(1)}
             </DialogTitle>
             <DialogContent>
-              <TextField
-                inputRef={nameRef}
-                label="Name"
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                required
-              />
-              <TextField
-                inputRef={emailRef}
-                label="Email"
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                required
-              />
-              <TextField
-                inputRef={passwordRef}
-                label="Password"
-                type="password"
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                required
-              />
+              <TextField inputRef={nameRef} label="Name" variant="outlined" margin="normal" fullWidth required />
+              <TextField inputRef={emailRef} label="Email" variant="outlined" margin="normal" fullWidth required />
+              <TextField inputRef={passwordRef} label="Password" type="password" variant="outlined" margin="normal" fullWidth required />
             </DialogContent>
             <DialogActions>
               <Button onClick={signupmodalClose} color="secondary" type="button">

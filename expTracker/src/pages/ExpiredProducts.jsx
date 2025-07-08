@@ -14,9 +14,6 @@ import {
   Fab,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useNavigate } from "react-router-dom";
 import "./ExpiredProducts.css";
 
 const socket = io("http://localhost:1337");
@@ -26,27 +23,30 @@ function ExpiredProducts() {
   const [notification, setNotification] = useState(null);
   const [crossedOut, setCrossedOut] = useState({});
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const navigate = useNavigate();
-
-  const fetchExpiredProducts = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:1337/fetchexpiredproducts"
-      );
-      setExpiredProducts(response.data);
-    } catch (error) {
-      console.error("Error fetching expired products:", error);
-    }
-  };
 
   useEffect(() => {
-    fetchExpiredProducts(); // Only fetch expired products on mount
+    async function fetchExpiredProducts() {
+      try {
+        const res = await axios.get("http://localhost:1337/fetchproductsmongo");
+        const today = new Date().toISOString().slice(0, 10);
+
+        const expired = res.data.filter(
+          (product) => product.expiry_date && product.expiry_date <= today
+        );
+
+        setExpiredProducts(expired);
+      } catch (error) {
+        console.error("Error fetching expired products:", error);
+      }
+    }
+
+    fetchExpiredProducts();
   }, []);
 
   useEffect(() => {
     socket.on("expiredProducts", (data) => {
-      setNotification(data.message); // Set the notification message
-      setExpiredProducts(data.products); // Update the expired products list
+      setNotification(data.message);
+      setExpiredProducts(data.products);
     });
 
     return () => {
@@ -79,7 +79,9 @@ function ExpiredProducts() {
       await axios.post("http://localhost:1337/deleteexpiredproducts", {
         ids: crossedOutIds,
       });
-      setExpiredProducts((prev) => prev.filter((product) => !crossedOut[product._id]));
+      setExpiredProducts((prev) =>
+        prev.filter((product) => !crossedOut[product._id])
+      );
       setCrossedOut({});
       setIsDeleteModalOpen(false);
     } catch (error) {
@@ -88,125 +90,112 @@ function ExpiredProducts() {
   };
 
   return (
-    <div className="expProd-container">
+    <>
       <Sidebar />
-      <div className="expProd-main">
-        {/* Back to Dashboard button at the very top */}
-        <Button
-          variant="outlined"
-          className="back-dashboard-btn"
-          startIcon={<ArrowBackIcon />}
-          onClick={() => navigate("/dashboard")}
-          style={{
-            margin: "16px 0",
-            background: "#dad7cd",
-            color: "#3a5a40",
-            fontWeight: 700,
-            fontSize: "1.1rem",
-            borderRadius: "10px",
-            textTransform: "none",
-            border: "1.5px solid #a3b18a",
-            boxShadow: "none",
-            letterSpacing: "0.5px",
-            padding: "8px 28px",
-          }}
-        >
-          BACK TO DASHBOARD
-        </Button>
-        {/* Heading below the button */}
-        <h1>Expired Products</h1>
-        {expiredProducts.length > 0 ? (
-          <div className="expProd-grid">
-            {expiredProducts.map((product) => (
-              <Card
-                key={product._id}
-                className={`expProd-card ${
-                  crossedOut[product._id] ? "crossed-out" : ""
-                }`}
-                onClick={() => toggleCrossOut(product._id)}
-              >
-                <CardContent>
-                  <Typography variant="h5" component="div">
-                    {product.prodname}
-                  </Typography>
-                  <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    Expiry Date: {product.expiry_date}
-                  </Typography>
-                  <Typography variant="body2">
-                    Quantity: {product.quantity}
-                  </Typography>
-                </CardContent>
-              </Card>
-            ))}
+      <div className="expProd-container">
+        <div className="expProd-main">
+          {/* Page Header */}
+          <div className="expProd-header">
+            <h1>Expired Products Management</h1>
+            <p className="expProd-subtitle">
+              Monitor and manage products that have reached their expiration date
+            </p>
           </div>
-        ) : (
-          <Typography>No expired products found.</Typography>
-        )}
+
+          {/* Products Grid */}
+          {expiredProducts.length > 0 ? (
+            <div className="expProd-grid">
+              {expiredProducts.map((product) => (
+                <Card
+                  key={product._id}
+                  className={`expProd-card ${crossedOut[product._id] ? "crossed-out" : ""}`}
+                  onClick={() => toggleCrossOut(product._id)}
+                >
+                  <CardContent className="expProd-card-content">
+                    <div className="expProd-card-header">
+                      <Typography variant="h6" component="div" className="product-name">
+                        {product.prodname}
+                      </Typography>
+                      <div className="expiry-badge">EXPIRED</div>
+                    </div>
+                    <div className="expProd-card-details">
+                      <div className="detail-item">
+                        <span className="detail-label">Expiry Date:</span>
+                        <span className="detail-value">{product.expiry_date}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label">Quantity:</span>
+                        <span className="detail-value">{product.quantity}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label">Category:</span>
+                        <span className="detail-value">{product.category}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="no-products-message">
+              <Typography variant="h6" className="no-products-text">
+                No expired products found
+              </Typography>
+              <Typography variant="body2" className="no-products-subtitle">
+                All products are within their expiration dates
+              </Typography>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Snackbar for push notification */}
+      {/* Snackbar Notification */}
       <Snackbar
         open={!!notification}
-        autoHideDuration={6000} // Notification disappears after 6 seconds
+        autoHideDuration={6000}
         onClose={handleCloseNotification}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }} // Position at the top center
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert onClose={handleCloseNotification} severity="warning" sx={{ width: "100%" }}>
           {notification}
         </Alert>
       </Snackbar>
 
-      {/* Sticky Delete Button */}
+      {/* Delete FAB */}
       <Fab
         color="secondary"
         aria-label="delete"
-        sx={{
-          position: "fixed",
-          bottom: 16,
-          right: 16,
-        }}
+        className="delete-fab"
         onClick={handleOpenDeleteModal}
       >
         <DeleteIcon />
       </Fab>
 
-      {/* Confirmation Modal for Deleting Crossed-Out Products */}
+      {/* Confirmation Modal */}
       <Modal
         open={isDeleteModalOpen}
         onClose={handleCloseDeleteModal}
         aria-labelledby="delete-confirmation-modal-title"
         aria-describedby="delete-confirmation-modal-description"
       >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 2,
-          }}
-        >
-          <Typography id="delete-confirmation-modal-title" variant="h6" component="h2">
+        <Box className="delete-modal">
+          <Typography id="delete-confirmation-modal-title" variant="h6" component="h2" className="modal-title">
             Confirm Deletion
           </Typography>
-          <Typography id="delete-confirmation-modal-description" sx={{ mt: 2 }}>
-            Are you sure you want to delete the crossed-out products?
+          <Typography id="delete-confirmation-modal-description" className="modal-description">
+            Are you sure you want to permanently delete the selected expired products? This action cannot be undone.
           </Typography>
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
-            <Button variant="contained" color="error" onClick={handleDeleteCrossedOut}>
-              Delete
+          <Box className="modal-actions">
+            <Button variant="contained" className="delete-btn" onClick={handleDeleteCrossedOut}>
+              Delete Products
             </Button>
-            <Button variant="outlined" onClick={handleCloseDeleteModal}>
+            <Button variant="outlined" className="cancel-btn" onClick={handleCloseDeleteModal}>
               Cancel
             </Button>
           </Box>
         </Box>
       </Modal>
-    </div>
+    </>
   );
 }
 

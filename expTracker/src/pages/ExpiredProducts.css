@@ -1,8 +1,23 @@
+/* 7-Eleven Color Palette */
+:root {
+  --primary-green: #00A651;
+  --dark-green: #007A3E;
+  --light-green: #E8F5E8;
+  --accent-orange: #FF6600;
+  --accent-red: #DC143C;
+  --neutral-white: #FFFFFF;
+  --neutral-gray: #F5F5F5;
+  --text-dark: #333333;
+  --text-light: #666666;
+  --border-color: #E0E0E0;
+}
+
+/* Main Container - Fixed sidebar overlap */
 .expProd-container {
-  margin-left: 300px; /* Match sidebar width */
+  margin-left: 280px; /* Proper sidebar spacing */
   min-height: 100vh;
-  background: #f5f7fa;
-  padding: 30px;
+  background: var(--neutral-gray);
+  padding: 24px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -10,123 +25,418 @@
 
 .expProd-main {
   flex: 1;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-  padding: 32px 28px;
+  background: var(--neutral-white);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  padding: 40px 32px;
   margin-bottom: 32px;
+  border: 1px solid var(--border-color);
 }
 
-.expProd-main h1 {
-  font-size: 2rem;
+/* Header Section */
+.expProd-header {
+  margin-bottom: 40px;
+  border-bottom: 2px solid var(--light-green);
+  padding-bottom: 24px;
+}
+
+.expProd-header h1 {
+  font-size: 2.5rem;
   font-weight: 700;
-  color: #26415e;
-  margin-bottom: 24px;
+  color: var(--primary-green);
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
 }
 
+.expProd-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Back Button - 7-Eleven Styled */
+.back-dashboard-btn {
+  background: var(--primary-green) !important;
+  color: var(--neutral-white) !important;
+  border: 2px solid var(--primary-green) !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  border-radius: 12px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  padding: 12px 32px !important;
+  box-shadow: 0 2px 8px rgba(0, 166, 81, 0.2) !important;
+  transition: all 0.3s ease !important;
+  margin-bottom: 32px !important;
+}
+
+.back-dashboard-btn:hover {
+  background: var(--dark-green) !important;
+  border-color: var(--dark-green) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 16px rgba(0, 166, 81, 0.3) !important;
+}
+
+/* Products Grid */
 .expProd-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 24px;
-  padding: 8px 0;
+  padding: 0;
 }
 
+/* Product Cards */
 .expProd-card {
   position: relative;
-  width: 100%;
-  min-height: 180px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.10);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 18px 12px;
-  text-align: center;
-  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 16px;
+  background: var(--neutral-white);
+  border: 2px solid var(--primary-green);
+  box-shadow: 0 4px 16px rgba(0, 166, 81, 0.1);
+  transition: all 0.3s ease;
   cursor: pointer;
-  font-size: 1rem;
-}
-
-.expProd-card.crossed-out {
-  text-decoration: line-through;
-  opacity: 0.5;
-  background: linear-gradient(135deg, #bdbdbd 0%, #757575 100%);
+  overflow: hidden;
 }
 
 .expProd-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0, 166, 81, 0.2);
+  border-color: var(--accent-orange);
 }
 
+.expProd-card.crossed-out {
+  opacity: 0.6;
+  background: var(--neutral-gray);
+  border-color: var(--text-light);
+  transform: scale(0.98);
+}
+
+.expProd-card.crossed-out:hover {
+  border-color: var(--accent-red);
+  transform: scale(0.98) translateY(-2px);
+}
+
+.expProd-card-content {
+  padding: 24px !important;
+}
+
+.expProd-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.product-name {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  color: var(--primary-green) !important;
+  margin: 0 !important;
+  line-height: 1.3 !important;
+  flex: 1;
+  margin-right: 16px !important;
+}
+
+.expiry-badge {
+  background: var(--accent-red);
+  color: var(--neutral-white);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.expProd-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+/* Crossed Out Animation */
+.crossed-out .expProd-card-content {
+  position: relative;
+}
+
+.crossed-out .expProd-card-content::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--accent-red);
+  transform: translateY(-50%);
+  z-index: 1;
+  animation: strike-through 0.4s ease-in-out;
+}
+
+@keyframes strike-through {
+  0% {
+    width: 0;
+    left: 50%;
+  }
+  100% {
+    width: 100%;
+    left: 0;
+  }
+}
+
+/* No Products Message */
+.no-products-message {
+  text-align: center;
+  padding: 80px 32px;
+  background: var(--light-green);
+  border-radius: 16px;
+  border: 2px dashed var(--primary-green);
+}
+
+.no-products-text {
+  color: var(--primary-green) !important;
+  font-weight: 600 !important;
+  margin-bottom: 8px !important;
+}
+
+.no-products-subtitle {
+  color: var(--text-light) !important;
+  font-size: 1rem !important;
+}
+
+/* Delete FAB */
+.delete-fab {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  background: var(--primary-green) !important;
+  color: var(--neutral-white) !important;
+  box-shadow: 0 4px 16px rgba(0, 166, 81, 0.3) !important;
+  width: 64px !important;
+  height: 64px !important;
+}
+
+.delete-fab:hover {
+  background: var(--accent-red) !important;
+  transform: scale(1.1) !important;
+  box-shadow: 0 6px 24px rgba(220, 20, 60, 0.4) !important;
+}
+
+/* Modal Styles */
+.delete-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 480px;
+  max-width: 90vw;
+  background: var(--neutral-white);
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+  padding: 32px;
+  border: 1px solid var(--border-color);
+}
+
+.modal-title {
+  color: var(--primary-green) !important;
+  font-weight: 600 !important;
+  margin-bottom: 16px !important;
+  font-size: 1.5rem !important;
+}
+
+.modal-description {
+  color: var(--text-light) !important;
+  margin-bottom: 32px !important;
+  line-height: 1.6 !important;
+  font-size: 1rem !important;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.delete-btn {
+  background: var(--accent-red) !important;
+  color: var(--neutral-white) !important;
+  border: none !important;
+  padding: 12px 24px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.delete-btn:hover {
+  background: #B91C3C !important;
+  transform: translateY(-2px) !important;
+}
+
+.cancel-btn {
+  background: transparent !important;
+  color: var(--primary-green) !important;
+  border: 2px solid var(--primary-green) !important;
+  padding: 10px 24px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.cancel-btn:hover {
+  background: var(--light-green) !important;
+  border-color: var(--dark-green) !important;
+  color: var(--dark-green) !important;
+}
+
+/* Snackbar Customization */
 .MuiSnackbar-root {
-  z-index: 1400;
+  z-index: 1400 !important;
 }
 
 .MuiAlert-root {
-  font-size: 1rem;
+  background: var(--accent-orange) !important;
+  color: var(--neutral-white) !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  border-radius: 12px !important;
 }
 
-.MuiFab-root {
-  background: #e74c3c !important;
-  color: #fff !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+.MuiAlert-icon {
+  color: var(--neutral-white) !important;
 }
 
-.MuiFab-root:hover {
-  background: #c0392b !important;
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .expProd-container {
+    margin-left: 240px;
+    padding: 20px;
+  }
+  
+  .expProd-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .expProd-container {
     margin-left: 0;
-    padding: 15px;
+    padding: 16px;
   }
+  
   .expProd-main {
-    padding: 16px 6px;
+    padding: 24px 20px;
   }
+  
+  .expProd-header h1 {
+    font-size: 2rem;
+  }
+  
   .expProd-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .delete-modal {
+    width: 320px;
+    padding: 24px;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
     gap: 12px;
   }
-}
-
-.crossed-out {
-  text-decoration: line-through; 
-  animation: cross-out-animation 0.4s ease forwards; 
-}
-
-@keyframes cross-out-animation {
-  0% {
-    transform: scale(1);
-    opacity: 1;
+  
+  .delete-btn,
+  .cancel-btn {
+    width: 100%;
+    justify-content: center;
   }
-  50% {
-    transform: scale(1.05);
-    opacity: 0.8;
+}
+
+@media (max-width: 480px) {
+  .expProd-container {
+    padding: 12px;
+  }
+  
+  .expProd-main {
+    padding: 20px 16px;
+  }
+  
+  .expProd-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .back-dashboard-btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+/* Loading States */
+.loading-skeleton {
+  background: linear-gradient(90deg, var(--neutral-gray) 25%, var(--border-color) 50%, var(--neutral-gray) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 8px;
+  height: 20px;
+  margin: 8px 0;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
   }
   100% {
-    transform: scale(1);
-    opacity: 0.5;
+    background-position: -200% 0;
   }
 }
 
-/* Add to your ExpiredProducts.css or global styles */
-.back-dashboard-btn {
-  background: #dad7cd !important;
-  color: #3a5a40 !important;
-  border: 1.5px solid #a3b18a !important;
-  font-weight: 700 !important;
-  font-size: 1.1rem !important;
-  border-radius: 10px !important;
-  text-transform: none !important;
-  letter-spacing: 0.5px !important;
-  padding: 8px 28px !important;
-  box-shadow: none !important;
+/* Focus States for Accessibility */
+.expProd-card:focus,
+.back-dashboard-btn:focus,
+.delete-fab:focus,
+.delete-btn:focus,
+.cancel-btn:focus {
+  outline: 3px solid var(--accent-orange);
+  outline-offset: 2px;
 }
-.back-dashboard-btn:hover {
-  background: #a3b18a !important;
-  color: #344e41 !important;
-  border-color: #588157 !important;
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  :root {
+    --primary-green: #006B3C;
+    --text-dark: #000000;
+    --border-color: #333333;
+  }
+  
+  .expProd-card {
+    border-width: 3px;
+  }
 }

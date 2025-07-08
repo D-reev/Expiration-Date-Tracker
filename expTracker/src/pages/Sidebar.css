@@ -1,56 +1,16 @@
-/* Formal & Classy Green Palette */
-:root {
-  --main-dark: #344e41;
-  --main-medium-dark: #3a5a40;
-  --main-medium: #588157;
-  --main-light: #a3b18a;
-  --main-very-light: #dad7cd;
-}
-
+/* Sidebar */
 .navbar {
-  display: flex;
-  flex-direction: column;
   height: 100vh;
-  width: 70px;
+  width: 300px;
   position: fixed;
   top: 0;
   left: 0;
-  background-color: var(--main-dark);
-  color: var(--main-very-light);
-  padding-top: 32px;
-  border-right: 2px solid var(--main-light);
-  box-shadow: 2px 0 12px rgba(52, 78, 65, 0.06);
-  transition: width 0.25s cubic-bezier(.4,0,.2,1);
-  overflow-x: hidden;
-}
-
-/* Only expand on hover if .expand-on-hover is present */
-.expand-on-hover:hover {
-  width: 270px;
-  box-shadow: 2px 0 16px rgba(52, 78, 65, 0.10);
-  z-index: 10;
-}
-
-.head {
-  font-weight: 700;
-  color: var(--main-light);
+  background-color: #007847; /* 7-Eleven green */
+  color: #ffffff;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  font-size: 1.7rem;
-  margin-bottom: 32px;
-  letter-spacing: 1px;
-  text-shadow: 0 1px 0 var(--main-very-light, 0.1);
-}
-
-.headtext {
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-/* Only show headtext on hover if .expand-on-hover is present */
-.expand-on-hover:hover .headtext {
-  opacity: 1;
+  padding-top: 20px;
+  z-index: 1000;
 }
 
 .navbarlink {
@@ -63,118 +23,96 @@
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: var(--main-very-light);
-  padding: 14px 28px;
-  border-radius: 8px;
-  margin: 4px 12px;
-  background: none;
-  font-size: 1.08rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  transition: background 0.2s, color 0.2s, transform 0.15s;
+  color: #ffffff;
+  padding: 15px 20px;
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  margin: 5px 10px;
   position: relative;
 }
 
-.nav-item span, .nav-item .nav-text {
-  opacity: 0;
-  transition: opacity 0.2s, margin 0.2s;
-  margin-left: -8px;
-  white-space: nowrap;
-}
-
-/* Only show nav-text on hover if .expand-on-hover is present */
-.expand-on-hover:hover .nav-item span,
-.expand-on-hover:hover .nav-item .nav-text {
-  opacity: 1;
-  margin-left: 0;
-}
-
 .nav-item .icon {
-  margin-right: 0;
-  transition: margin 0.2s;
+  margin-right: 10px;
+  font-size: 1.5rem;
 }
 
-.expand-on-hover:hover .nav-item .icon {
-  margin-right: 14px;
-}
-
+/* Hover = orange */
 .nav-item:hover:not(.active) {
-  background: var(--main-medium);
-  color: var(--main-very-light);
-  transform: translateX(4px) scale(1.03);
+  background-color: #f77f00; /* orange */
+  color: #ffffff;
+  transform: scale(1.05);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.nav-item:hover:not(.active) .icon {
-  color: var(--main-very-light);
-}
-
+/* Active = red */
 .nav-item.active {
-  background: var(--main-medium-dark);
-  color: var(--main-very-light);
-  font-weight: 700;
-  transform: translateX(6px) scale(1.04);
-  border-left: 5px solid var(--main-light);
+  background-color: #d62828; /* red */
+  color: #ffffff;
+  font-weight: bold;
+  transform: scale(1.02);
 }
 
-.nav-item.active .icon {
-  color: var(--main-light);
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10%;
+  bottom: 10%;
+  width: 6px;
+  border-radius: 5px;
+  background-color: #f77f00; /* orange stripe */
+  box-shadow: 0 0 10px rgba(247, 127, 0, 0.7);
 }
 
-.logout-bottom {
-  margin-top: auto;
-  color: var(--main-very-light);
-  font-weight: 600;
-  padding: 14px 28px;
-  border-radius: 8px;
-  margin: 18px 12px 24px 12px;
-  background: none;
-  transition: background 0.2s, color 0.2s, transform 0.15s;
-  cursor: pointer;
-  border: none;
-  font-size: 1.08rem;
-  letter-spacing: 0.5px;
-  width: 100%;
-  justify-content: flex-start;
+.head {
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
 }
 
-.logout-bottom:hover {
-  background: var(--main-medium);
-  color: var(--main-very-light);
-  transform: translateX(4px) scale(1.03);
-}
-
+/* Modal */
 .card {
-  background-color: var(--main-very-light);
-  color: var(--main-dark);
+  background-color: #ffffff;
+  text-align: center;
   border-radius: 0.5rem;
   width: 320px;
   padding: 1.5rem 1rem;
-  box-shadow: 0 8px 18px -5px rgba(52, 78, 65, 0.08), 0 4px 8px -5px rgba(52, 78, 65, 0.03);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+              0 10px 10px -5px rgba(0, 0, 0, 0.04);
   margin: auto;
-  text-align: center;
 }
 
 .card .icon {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--main-light);
+  background-color: #fddede;
   width: 3rem;
   height: 3rem;
   border-radius: 9999px;
   margin: 0 auto 1rem auto;
 }
 
+.warning {
+  color: #d62828; /* red icon */
+  font-size: 2rem;
+}
+
 .card .title {
-  color: var(--main-medium-dark);
-  font-size: 1.15rem;
+  color: #007847; /* green title */
+  font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
 .card .message {
-  color: var(--main-medium-dark);
-  font-size: 0.95rem;
+  color: #333;
+  font-size: 0.9rem;
   margin-bottom: 1.5rem;
 }
 
@@ -184,130 +122,53 @@
   gap: 1rem;
 }
 
-.card .cancel {
-  background-color: var(--main-very-light);
-  color: var(--main-dark);
-  border: 1px solid var(--main-light);
-  border-radius: 6px;
-  padding: 0.5rem 1.2rem;
+.card .cancel,
+.card .logout {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
   font-weight: 500;
-  transition: background 0.2s, color 0.2s;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.card .cancel {
+  background-color: #ffffff;
+  color: #f77f00; /* orange text */
+  border: 2px solid #f77f00;
 }
 
 .card .cancel:hover {
-  background-color: var(--main-light);
-  color: var(--main-dark);
+  background-color: #fff5e1;
+  transform: scale(1.02);
 }
 
 .card .logout {
-  background-color: var(--main-medium-dark);
-  color: var(--main-very-light);
+  background-color: #d62828; /* red */
+  color: #ffffff;
   border: none;
-  border-radius: 6px;
-  padding: 0.5rem 1.2rem;
-  font-weight: 500;
-  transition: background 0.2s, color 0.2s;
 }
 
 .card .logout:hover {
-  background-color: var(--main-medium);
-  color: var(--main-very-light);
+  background-color: #a61b1b;
+  transform: scale(1.02);
 }
 
-/* Always expanded on dashboard */
-.navbar.expanded {
-  width: 270px;
-  box-shadow: 2px 0 16px rgba(52, 78, 65, 0.10);
-  z-index: 10;
+/* Dialog layer priority */
+.MuiDialog-root {
+  z-index: 1400 !important;
 }
 
-/* Show text and move icon when expanded */
-.navbar.expanded .headtext,
-.navbar.expanded .nav-item span,
-.navbar.expanded .nav-item .nav-text {
-  opacity: 1;
-  margin-left: 0;
-  pointer-events: auto;
-}
-.navbar.expanded .nav-item .icon {
-  margin-right: 14px;
+.MuiBackdrop-root {
+  z-index: 1300 !important;
 }
 
-/* Collapsed: center icon, hide text */
-.navbar:not(.expanded) .nav-item {
-  justify-content: center;
-}
-.navbar:not(.expanded) .nav-item .icon {
-  margin-right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.navbar:not(.expanded) .nav-item span,
-.navbar:not(.expanded) .nav-item .nav-text,
-.navbar:not(.expanded) .headtext {
-  opacity: 0;
-  margin-left: -8px;
-  pointer-events: none;
-}
-
-/* Center the logout icon when sidebar is collapsed */
-.navbar:not(.expanded) .logout-bottom {
-  justify-content: center !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  text-align: center;
-}
-
-/* Hide the text label when collapsed */
-.navbar:not(.expanded) .logout-bottom .nav-text {
-  display: none;
-}
-
-/* Remove hover effect for logout in collapsed mode */
-.navbar:not(.expanded) .logout-bottom:hover {
-  background: none;
-  color: var(--main-very-light);
-  transform: none;
-  cursor: pointer;
-}
-
-/* When expanded, show text and allow hover effect */
-.navbar.expanded .logout-bottom {
-  justify-content: flex-start;
-  padding-left: 28px;
-  padding-right: 28px;
-}
-
-.navbar.expanded .logout-bottom .nav-text {
-  display: inline;
-}
-
-.navbar.expanded .logout-bottom:hover {
-  background: var(--main-medium);
-  color: var(--main-very-light);
-  transform: translateX(4px) scale(1.03);
-}
-
-/* Bottom icons container for inventory page */
-.sidebar-bottom-icons {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 18px;
-  margin-top: auto;
-  margin-bottom: 10vh; 
-}
-
-.sidebar-bottom-icons .nav-item {
-  width: 100%;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
-}
-
-.sidebar-bottom-icons .nav-item .nav-text {
-  display: none;
+/* Optional dimming */
+body.modal-open .navbar::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 1200;
 }

@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./Cashier.css";
-import {
-  Typography,
-  Box,
-  Button,
-  TextField,
-  Paper,
-  IconButton,
-  Divider,
-} from "@mui/material";
 import Sidebar from "./Sidebar";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -79,121 +70,157 @@ function Cashier() {
   const tax = subTotal * 0.05;
 
   return (
-    <div className="inventory-container cashier-flex">
+    <>
       <Sidebar />
-      <main className="cashier-main">
-        {/* Category Filter */}
-        <Paper className="cashier-category-bar">
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
-            <Button
-              variant={!selectedCategory ? "contained" : "outlined"}
-              color="primary"
+      <div
+        className="cashier-main-wrapper"
+        style={{
+          marginLeft: "85px",
+          marginTop: "2rem",
+          maxWidth: "calc(100% - 85px)",
+          display: "flex",
+          gap: "2rem",
+          alignItems: "flex-start",
+        }}
+      >
+        <main className="cashier-main" style={{ flex: 2 }}>
+          {/* Category Filter */}
+          <div className="cashier-category-bar">
+            <button
+              className={`category-btn${!selectedCategory ? " active" : ""}`}
               onClick={() => setSelectedCategory(null)}
-              sx={{ borderRadius: 3, fontWeight: 600 }}
             >
               All
-            </Button>
+            </button>
             {categories.map((cat) => (
-              <Button
+              <button
                 key={cat.id}
-                variant={selectedCategory === cat.label ? "contained" : "outlined"}
-                color="primary"
+                className={`category-btn${
+                  selectedCategory === cat.label ? " active" : ""
+                }`}
                 onClick={() => setSelectedCategory(cat.label)}
-                sx={{ borderRadius: 3, fontWeight: 600 }}
               >
                 {cat.label}
-              </Button>
+              </button>
             ))}
-            <TextField
-              placeholder="Search product..."
-              size="small"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              sx={{ ml: "auto", background: "#fff", borderRadius: 2 }}
-            />
-          </Box>
-        </Paper>
+            <div className="search-box">
+              <span className="search-icon" role="img" aria-label="search">
+                🔍
+              </span>
+              <input
+                type="text"
+                placeholder="Search product..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+          </div>
 
-        {/* Product Grid */}
-        <Typography variant="h5" sx={{ mt: 3, mb: 1, fontWeight: 700, color: "#26415e" }}>
-          Choose Order
-        </Typography>
-        <Box className="cashier-product-grid">
-          {filteredProducts.length > 0 ? (
-            filteredProducts.map((product) => (
-              <Paper key={product.prodid} className="cashier-product-card">
-                <Box sx={{ mb: 1 }}>
-                  {/* Placeholder image */}
-                  <Box
-                    sx={{
-                      width: 80,
-                      height: 80,
-                      background: "#f3f6fa",
-                      borderRadius: "50%",
-                      mx: "auto",
-                      mb: 1,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 32,
-                      color: "#bdbdbd",
-                    }}
+          {/* Product Grid */}
+          <h2
+            style={{
+              color: "var(--primary-dark)",
+              fontWeight: 700,
+              margin: "24px 0 18px 0",
+            }}
+          >
+            Choose Order
+          </h2>
+          <div className="cashier-product-grid">
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
+                <div key={product.prodid} className="cashier-product-card">
+                  <div style={{ marginBottom: 8 }}>
+                    <div
+                      style={{
+                        width: 80,
+                        height: 80,
+                        background: "#f3f6fa",
+                        borderRadius: "50%",
+                        margin: "0 auto 8px auto",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 32,
+                        color: "#bdbdbd",
+                      }}
+                    >
+                      <span role="img" aria-label="product">
+                        🛒
+                      </span>
+                    </div>
+                  </div>
+                  <div className="product-name">{product.prodname}</div>
+                  <div style={{ color: "#6c7a89", fontSize: 14 }}>
+                    {product.category}
+                  </div>
+                  <div style={{ color: "#6c7a89", fontSize: 14 }}>
+                    {product.unit} | Qty: {product.quantity}
+                  </div>
+                  <div style={{ color: "#6c7a89", fontSize: 14 }}>
+                    Exp: {product.expiry_date}
+                  </div>
+                  <div className="product-price">
+                    ₱{product.price ? Number(product.price).toFixed(2) : "0.00"}
+                  </div>
+                  <button
+                    className="add-btn"
+                    onClick={() => addToCart(product)}
+                    disabled={product.quantity <= 0}
                   >
-                    <span role="img" aria-label="product">
-                      🛒
-                    </span>
-                  </Box>
-                </Box>
-                <Typography variant="subtitle1" sx={{ fontWeight: 600, color: "#26415e" }}>
-                  {product.prodname}
-                </Typography>
-                <Typography variant="body2" sx={{ color: "#6c7a89" }}>
-                  {product.category}
-                </Typography>
-                <Typography variant="body2" sx={{ color: "#6c7a89" }}>
-                  {product.unit} | Qty: {product.quantity}
-                </Typography>
-                <Typography variant="body2" sx={{ color: "#6c7a89" }}>
-                  Exp: {product.expiry_date}
-                </Typography>
-                <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "#26415e", mt: 1 }}>
-                  ₱{product.price ? Number(product.price).toFixed(2) : "0.00"}
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  sx={{ mt: 1, borderRadius: 3, fontWeight: 600 }}
-                  onClick={() => addToCart(product)}
-                  disabled={product.quantity <= 0}
+                    {product.quantity > 0 ? "Add to Cart" : "Out of Stock"}
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div style={{ color: "#bdbdbd", marginTop: 32 }}>
+                No products found
+              </div>
+            )}
+          </div>
+        </main>
+        <aside className="cashier-cart" style={{ flex: 1 }}>
+          <h2
+            style={{
+              color: "var(--primary-dark)",
+              fontWeight: 700,
+              marginBottom: 16,
+            }}
+          >
+            Order Menu
+          </h2>
+          <hr
+            style={{
+              marginBottom: 16,
+              border: "none",
+              borderTop: "1px solid #eee",
+            }}
+          />
+          <div style={{ flex: 1, overflowY: "auto" }}>
+            {cart.length === 0 ? (
+              <div className="cart-empty">
+                <span
+                  className="empty-icon"
+                  role="img"
+                  aria-label="empty-cart"
                 >
-                  {product.quantity > 0 ? "Add to Cart" : "Out of Stock"}
-                </Button>
-              </Paper>
-            ))
-          ) : (
-            <Typography sx={{ color: "#bdbdbd", mt: 4 }}>No products found</Typography>
-          )}
-        </Box>
-      </main>
-
-      {/* Cart / Order Menu */}
-      <aside className="cashier-cart">
-        <Typography variant="h6" sx={{ fontWeight: 700, color: "#26415e", mb: 2 }}>
-          Order Menu
-        </Typography>
-        <Divider sx={{ mb: 2 }} />
-        <Box sx={{ flex: 1, overflowY: "auto" }}>
-          {cart.length === 0 ? (
-            <Typography sx={{ color: "#bdbdbd", textAlign: "center", mt: 4 }}>
-              Cart is empty
-            </Typography>
-          ) : (
-            cart.map((item) => (
-              <Box key={item.prodid} className="cart-item">
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Box
-                    sx={{
+                  🛒
+                </span>
+                <div>No items yet</div>
+              </div>
+            ) : (
+              cart.map((item) => (
+                <div
+                  key={item.prodid}
+                  className="cart-item"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  <div
+                    style={{
                       width: 40,
                       height: 40,
                       background: "#f3f6fa",
@@ -206,48 +233,91 @@ function Cashier() {
                     }}
                   >
                     🛒
-                  </Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 600, color: "#26415e" }}>
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div
+                      style={{
+                        fontWeight: 600,
+                        color: "var(--primary-dark)",
+                      }}
+                    >
                       {item.prodname}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: "#6c7a89" }}>
-                      ₱{item.price ? Number(item.price).toFixed(2) : "0.00"} x {item.qty}
-                    </Typography>
-                  </Box>
-                  <IconButton size="small" onClick={() => removeFromCart(item.prodid)}>
-                    <RemoveIcon />
-                  </IconButton>
-                  <IconButton size="small" onClick={() => addToCart(item)}>
-                    <AddIcon />
-                  </IconButton>
-                </Box>
-              </Box>
-            ))
-          )}
-        </Box>
-        <Divider sx={{ my: 2 }} />
-        <Box sx={{ mb: 2 }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography>Sub Total</Typography>
-            <Typography>₱{subTotal.toFixed(2)}</Typography>
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography>Tax (5%)</Typography>
-            <Typography>₱{tax.toFixed(2)}</Typography>
-          </Box>
-        </Box>
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ borderRadius: 3, fontWeight: 700, py: 1.5 }}
-          disabled={cart.length === 0}
-        >
-          Order Now
-        </Button>
-      </aside>
-    </div>
+                    </div>
+                    <div style={{ color: "#6c7a89", fontSize: 14 }}>
+                      ₱{item.price ? Number(item.price).toFixed(2) : "0.00"} x{" "}
+                      {item.qty}
+                    </div>
+                  </div>
+                  <button
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "var(--primary-dark)",
+                      cursor: "pointer",
+                      fontSize: 18,
+                      padding: 4,
+                    }}
+                    onClick={() => removeFromCart(item.prodid)}
+                    aria-label="Remove"
+                  >
+                    <RemoveIcon fontSize="inherit" />
+                  </button>
+                  <button
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "var(--primary-dark)",
+                      cursor: "pointer",
+                      fontSize: 18,
+                      padding: 4,
+                    }}
+                    onClick={() => addToCart(item)}
+                    aria-label="Add"
+                  >
+                    <AddIcon fontSize="inherit" />
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+          <hr
+            style={{
+              margin: "16px 0",
+              border: "none",
+              borderTop: "1px solid #eee",
+            }}
+          />
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span className="summary-label">Sub Total</span>
+              <span className="summary-value">₱{subTotal.toFixed(2)}</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span className="summary-label">Tax (5%)</span>
+              <span className="summary-value">₱{tax.toFixed(2)}</span>
+            </div>
+            <div
+              style={{
+                marginTop: 10,
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <span className="total-label">Total</span>
+              <span className="total-value">
+                ₱{(subTotal + tax).toFixed(2)}
+              </span>
+            </div>
+          </div>
+          <button
+            className="place-order-btn"
+            disabled={cart.length === 0}
+          >
+            Order Now
+          </button>
+        </aside>
+      </div>
+    </>
   );
 }
 
