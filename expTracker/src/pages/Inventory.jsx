@@ -134,7 +134,7 @@ function Inventory() {
         }
 
 
-        await axios.post(`${apiConfig}/addproductmongo`, newProduct);
+        await axios.post(`${API_BASE}/addproductmongo`, newProduct);
         fetchProducts(); 
         resetForm(); 
         setOpenModalAdd(false); 
@@ -157,7 +157,7 @@ function Inventory() {
       console.log("Deleting product with prodid:", selectedProduct.prodid); // Debugging
   
       try {
-          await axios.delete(`${apiConfig}/deleteproductmongo/${selectedProduct.prodid}`);
+          await axios.delete(`${API_BASE}/deleteproductmongo/${selectedProduct.prodid}`);
 
           fetchProducts();
 
@@ -192,7 +192,7 @@ function Inventory() {
     async function handleEditProduct() {
       try {
         await axios.put(
-          (`${apiConfig}/updateproductmongo/${selectedProduct.prodid}`), 
+          (`${API_BASE}/updateproductmongo/${selectedProduct.prodid}`), 
           editFormData
         );
         
