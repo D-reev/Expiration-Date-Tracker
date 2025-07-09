@@ -38,6 +38,30 @@ function Home() {
         fetchRecentProducts();
     }, []);
 
+    // 7/11 branch status states
+    const [activeAccordion, setActiveAccordion] = useState(null);
+    const [kahitSaanOnline, setKahitSaanOnline] = useState(null);
+    const [nbsOnline, setNbsOnline] = useState(null);
+    const [blanktapes, setBlanktapes] = useState(null);
+    const [pnb, setPnb] = useState(null);
+    const [jollibee, setJollibee] = useState(null);
+
+    useEffect(() => {
+        const checkStatus = async (url, setter) => {
+            try {
+                await fetch(url, { mode: 'no-cors' });
+                setter(true);
+            } catch {
+                setter(false);
+            }
+        };
+        checkStatus('http://192.168.9.69:5173/', setKahitSaanOnline);
+        checkStatus('http://192.168.9.9:5173/', setNbsOnline);
+        checkStatus('http://192.168.9.36:5173/', setBlanktapes);
+        checkStatus('http://192.168.9.37:5173/', setPnb);
+        checkStatus('http://192.168.9.38:5173/', setJollibee);
+    }, []);
+
     return (
         <div className="dashboard-container">
             <Sidebar />
@@ -100,42 +124,150 @@ function Home() {
                     </div>
                 </section>
 
-                <section id='about-section' className='about-section'>
-                    <div className="about-container">
-                        <h1>About</h1>
-                        <div className="about-content">
-                            <h2>Expiration Date Tracker</h2>
-                            <p>
-                                Expiration Date Tracker is a full-stack web application designed to help users efficiently manage and monitor product expiration dates. 
-                                The system allows you to add, view, and track inventory items, receive notifications for expired products, and keep your stock up-to-date.
-                            </p>
-                            <h3>Features:</h3>
-                            <ul>
-                                <li>Track inventory and product expiration dates in real time.</li>
-                                <li>Receive notifications for expired products as soon as you log in.</li>
-                                <li>View recently added products and expired items in dedicated sections.</li>
-                                <li>Modern, responsive dashboard for easy management.</li>
-                                <li>Secure authentication and user management.</li>
-                            </ul>
-                            <h3>Built With:</h3>
-                            <ul>
-                                <li><strong>Backend:</strong> Node.js, Express.js (REST API development)</li>
-                                <li><strong>Database:</strong> MongoDB (NoSQL for flexible data storage)</li>
-                                <li><strong>Frontend:</strong> React.js with <strong>Material-UI (MUI)</strong> for a modern UI</li>
-                                <li><strong>Real-time:</strong> Socket.io for instant notifications</li>
-                                <li><strong>HTTP Requests:</strong> Axios for efficient API communication</li>
-                                <li><strong>Tools:</strong> Nodemon (auto-reload), Git/GitHub (version control)</li>
-                            </ul>
-                            <p>
-                                Future enhancements include analytics, customizable notifications, and advanced reporting for better inventory control.
-                            </p>
-                        </div>
-                    </div>
-                </section>
-
-                <section className='footer-section'>
-                    All Rights Reserverd @2025
-                </section>
+                {/* 7-Eleven About Section */}
+                <section id="about-section" className="about-section">
+  <div className="about-7eleven-row">
+    <div className="about-7eleven-cols">
+      <div className="about-7eleven-col">
+        <h3 style={{ fontWeight: "bold" }}>Get To Know Us</h3>
+        <ul style={{ listStyle: "none", padding: 0 }}>
+          <li>About 7-Eleven Tracker</li>
+          <li>Blog</li>
+          <li>Careers</li>
+          <li>Newsroom</li>
+        </ul>
+      </div>
+      <div className="about-7eleven-col">
+        <h3 style={{ fontWeight: "bold" }}>System Info</h3>
+        <ul style={{ listStyle: "none", padding: 0 }}>
+          <li>Inventory Monitoring</li>
+          <li>Expiry Date Alerts</li>
+          <li>Branch Status Dashboard</li>
+          <li>Real-time Notifications</li>
+        </ul>
+      </div>
+      <div className="about-7eleven-col">
+        <h3 style={{ fontWeight: "bold" }}>How Can We Help?</h3>
+        <ul style={{ listStyle: "none", padding: 0 }}>
+          <li>Contact Us</li>
+          <li>Feedback</li>
+          <li>Vendor Guidelines</li>
+          <li>Support</li>
+        </ul>
+      </div>
+      <div className="about-7eleven-col">
+        <h3 style={{ fontWeight: "bold" }}>Download</h3>
+        <ul style={{ listStyle: "none", padding: 0 }}>
+          <li>7-Eleven App</li>
+          <li>Inventory Mobile App</li>
+          <li>Branch Status App</li>
+        </ul>
+      </div>
+    </div>
+    <div className="about-7eleven-logo-status">
+      <div>7-Eleven Logo</div>
+      <img
+        src="/img/7eleven-logo.png"
+        alt="7-Eleven Logo"
+        className="about-7eleven-logo"
+      />
+      <div className="branch-status-box">
+        <h4>Branch Status</h4>
+        <ul className="branch-status-list">
+          <li>
+            Kahit Saan:{" "}
+            <span className={
+              kahitSaanOnline === null
+                ? "branch-status-checking"
+                : kahitSaanOnline
+                ? "branch-status-online"
+                : "branch-status-offline"
+            }>
+              {kahitSaanOnline === null
+                ? "Checking..."
+                : kahitSaanOnline
+                ? "Online"
+                : "Offline"}
+            </span>
+          </li>
+          <li>
+            NBS:{" "}
+            <span className={
+              nbsOnline === null
+                ? "branch-status-checking"
+                : nbsOnline
+                ? "branch-status-online"
+                : "branch-status-offline"
+            }>
+              {nbsOnline === null
+                ? "Checking..."
+                : nbsOnline
+                ? "Online"
+                : "Offline"}
+            </span>
+          </li>
+          <li>
+            Blanktapes:{" "}
+            <span className={
+              blanktapes === null
+                ? "branch-status-checking"
+                : blanktapes
+                ? "branch-status-online"
+                : "branch-status-offline"
+            }>
+              {blanktapes === null
+                ? "Checking..."
+                : blanktapes
+                ? "Online"
+                : "Offline"}
+            </span>
+          </li>
+          <li>
+            PNB:{" "}
+            <span className={
+              pnb === null
+                ? "branch-status-checking"
+                : pnb
+                ? "branch-status-online"
+                : "branch-status-offline"
+            }>
+              {pnb === null
+                ? "Checking..."
+                : pnb
+                ? "Online"
+                : "Offline"}
+            </span>
+          </li>
+          <li>
+            Jollibee:{" "}
+            <span className={
+              jollibee === null
+                ? "branch-status-checking"
+                : jollibee
+                ? "branch-status-online"
+                : "branch-status-offline"
+            }>
+              {jollibee === null
+                ? "Checking..."
+                : jollibee
+                ? "Online"
+                : "Offline"}
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div className="about-footer-bar"></div>
+  <div className="about-footer-links">
+    <span>Terms & Conditions</span>|
+    <span>Privacy Notice</span>|
+    <span>FAQs</span>|
+    <span>Your Privacy Choices</span>|
+    <span>Site Accessibility Statement</span>|
+    <span>Do Not Sell or Share My Information</span>
+  </div>
+</section>
             </div>
         </div>
     );

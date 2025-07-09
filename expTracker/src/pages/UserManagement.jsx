@@ -22,6 +22,8 @@ function UserManagement({ currentUser }) {
     email: "",
     role: "employee"
   });
+  const [resetRequests, setResetRequests] = useState([]);
+  const [loadingRequests, setLoadingRequests] = useState(false);
 
   const useridRef = useRef();
   const nameRef = useRef();
@@ -42,11 +44,23 @@ function UserManagement({ currentUser }) {
 
   useEffect(() => {
     fetchUsers();
+    fetchResetRequests();
   }, []);
 
   async function fetchUsers() {
     const res = await axios.get(`${API_BASE}/users`);
     setUsers(res.data);
+  }
+
+  async function fetchResetRequests() {
+    setLoadingRequests(true);
+    try {
+      const res = await axios.get(`${API_BASE}/password-reset-requests`);
+      setResetRequests(res.data);
+    } catch (err) {
+      setResetRequests([]);
+    }
+    setLoadingRequests(false);
   }
 
   async function handleAddUser() {
@@ -91,6 +105,16 @@ function UserManagement({ currentUser }) {
     await axios.delete(`${API_BASE}/users/${selectedUser.userid}`);
     fetchUsers();
     setOpenModalDelete(false);
+  }
+
+  async function handleApproveRequest(id) {
+    await axios.post(`${API_BASE}/password-reset-requests/${id}/approve`);
+    fetchResetRequests();
+  }
+
+  async function handleRejectRequest(id) {
+    await axios.post(`${API_BASE}/password-reset-requests/${id}/reject`);
+    fetchResetRequests();
   }
 
   return (
@@ -183,6 +207,67 @@ function UserManagement({ currentUser }) {
             <Button variant="contained" color="error" onClick={handleDeleteUser}>Delete</Button>
           </DialogActions>
         </Dialog>
+
+        {/* Password Reset Requests Section */}
+        <div className="inventory-header" style={{marginTop: 32, marginBottom: 8}}>
+          <Typography variant="h5" className="inventory-title">Password Reset Requests</Typography>
+        </div>
+        <TableContainer component={Paper} style={{marginBottom: 32}}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell><strong>Email</strong></TableCell>
+                <TableCell><strong>Role</strong></TableCell>
+                <TableCell><strong>Requested At</strong></TableCell>
+                <TableCell><strong>Status</strong></TableCell>
+                <TableCell><strong>Actions</strong></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {loadingRequests ? (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">Loading...</TableCell>
+                </TableRow>
+              ) : resetRequests.length > 0 ? (
+                resetRequests.map(req => (
+                  <TableRow key={req._id}>
+                    <TableCell>{req.email}</TableCell>
+                    <TableCell>{req.role}</TableCell>
+                    <TableCell>{new Date(req.requestedAt).toLocaleString()}</TableCell>
+                    <TableCell>{req.status}</TableCell>
+                    <TableCell>
+                      {req.status === "pending" && (
+                        <>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            size="small"
+                            style={{marginRight: 8}}
+                            onClick={() => handleApproveRequest(req._id)}
+                          >
+                            Approve
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="error"
+                            size="small"
+                            onClick={() => handleRejectRequest(req._id)}
+                          >
+                            Reject
+                          </Button>
+                        </>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">No password reset requests</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </main>
     </div>
   );

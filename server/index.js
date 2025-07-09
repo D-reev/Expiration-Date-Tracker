@@ -6,6 +6,7 @@ const Log = require("./logs.model");
 const http = require("http");
 const { Server } = require("socket.io");
 const bcrypt = require("bcrypt");
+const request = require('./request.model');
 
 require('dotenv').config(); // loads .env
 const mongoose = require('mongoose');
@@ -358,6 +359,59 @@ app.get("/expiredproducts/count", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+// Submit request
+app.post("/forgot-password-request", async (req, res) => {
+  const { email, role } = req.body;
+  const user = await User.findOne({ email, role });
+  if (!user) return res.status(404).json({ error: "Email not found for this role." });
+  // Only one pending request per user
+  const existing = await request.findOne({ email, status: "pending" });
+  if (existing) return res.status(400).json({ error: "A pending request already exists." });
+  const reqDoc = await request.create({ email, role });
+  res.json({ message: "Request received", requestId: reqDoc._id });
+});
+
+// Get all requests (for admin)
+app.get("/password-reset-requests", async (req, res) => {
+  const requests = await request.find().sort({ requestedAt: -1 });
+  res.json(requests);
+});
+
+// Approve request
+app.post("/password-reset-requests/:id/approve", async (req, res) => {
+  const reqDoc = await request.findByIdAndUpdate(req.params.id, { status: "approved" }, { new: true });
+  res.json(reqDoc);
+});
+
+// Reject request
+app.post("/password-reset-requests/:id/reject", async (req, res) => {
+  const reqDoc = await request.findByIdAndUpdate(req.params.id, { status: "rejected" }, { new: true });
+  res.json(reqDoc);
+});
+
+// Check request status (for polling)
+app.get("/password-reset-requests/:id/status", async (req, res) => {
+  const reqDoc = await request.findById(req.params.id);
+  res.json({ status: reqDoc?.status || "not_found" });
+});
+
+// Actually change password/email after approval
+app.post("/reset-password", async (req, res) => {
+  const { email, newPassword, newEmail } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) return res.status(404).json({ error: "User not found" });
+  if (newEmail && newEmail !== email) {
+    const exists = await User.findOne({ email: newEmail });
+    if (exists) return res.status(400).json({ error: "New email already exists" });
+    user.email = newEmail;
+  }
+  if (newPassword) {
+    user.password = await bcrypt.hash(newPassword, 10);
+  }
+  await user.save();
+  res.json({ message: "Password/email updated" });
 });
 
 // Start the server

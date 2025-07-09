@@ -17,6 +17,7 @@ const socket = io(`${API_BASE}`);
 function App() {
     const [notification, setNotification] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
+    const [userLoaded, setUserLoaded] = useState(false);
     const [expiredModalOpen, setExpiredModalOpen] = useState(false);
     const [expiredCount, setExpiredCount] = useState(0);
 
@@ -46,6 +47,13 @@ function App() {
             fetchExpiredCount();
         }
     }, [currentUser]);
+    useEffect(() => {
+        const savedUser = localStorage.getItem("currentUser");
+        if (savedUser) {
+            setCurrentUser(JSON.parse(savedUser));
+        }
+        setUserLoaded(true);
+    }, []);
 
     return (
         <HashRouter>
@@ -86,17 +94,19 @@ function App() {
                 )}
 
                 {/* Routes */}
-                <Routes>
-                    <Route path="/" element={<Navigate to="/login" replace />} />
-                    <Route path="/login" element={<Login setCurrentUser={setCurrentUser} />} />
-                    <Route path="/dashboard" element={currentUser ? <Dashboard currentUser={currentUser} /> : <Navigate to="/login" />} />
-                    <Route path="/inventory" element={currentUser ? <Inventory currentUser={currentUser} /> : <Navigate to="/login" />} />
-                    <Route path="/expiredproducts" element={currentUser ? <ExpiredProducts currentUser={currentUser} /> : <Navigate to="/login" />} />
-                    <Route path="/usermanagement" element={currentUser ? <UserManagement currentUser={currentUser} /> : <Navigate to="/login" />} />
-                    <Route path="/adminlogs" element={currentUser ? <AdminLogs currentUser={currentUser} /> : <Navigate to="/login" />} />
-                    <Route path="/cashier" element={currentUser ? <Cashier currentUser={currentUser} /> : <Navigate to="/login" />} />
-                    <Route path="*" element={<h1>404 - Page Not Found</h1>} />
-                </Routes>
+                {userLoaded && (
+                    <Routes>
+                        <Route path="/" element={<Navigate to="/login" replace />} />
+                        <Route path="/login" element={<Login setCurrentUser={setCurrentUser} />} />
+                        <Route path="/dashboard" element={currentUser ? <Dashboard currentUser={currentUser} /> : <Navigate to="/login" />} />
+                        <Route path="/inventory" element={currentUser ? <Inventory currentUser={currentUser} /> : <Navigate to="/login" />} />
+                        <Route path="/expiredproducts" element={currentUser ? <ExpiredProducts currentUser={currentUser} /> : <Navigate to="/login" />} />
+                        <Route path="/usermanagement" element={currentUser ? <UserManagement currentUser={currentUser} /> : <Navigate to="/login" />} />
+                        <Route path="/adminlogs" element={currentUser ? <AdminLogs currentUser={currentUser} /> : <Navigate to="/login" />} />
+                        <Route path="/cashier" element={currentUser ? <Cashier currentUser={currentUser} /> : <Navigate to="/login" />} />
+                        <Route path="*" element={<h1>404 - Page Not Found</h1>} />
+                    </Routes>
+                )}
             </div>
         </HashRouter>
     );

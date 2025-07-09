@@ -77,7 +77,13 @@ function Sidebar() {
             <NavLink
               to="/cashier"
               className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
-              style={{ display: currentUser && currentUser.role === "cashier" ? "flex" : "none" }}
+              style={{
+                display:
+                  currentUser &&
+                  (currentUser.role === "cashier" || currentUser.role === "admin")
+                    ? "flex"
+                    : "none"
+              }}
             >
               <ShoppingCartIcon className="icon" />
               Cashier

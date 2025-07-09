@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Typography,
 } from "@mui/material";
 import axios from "axios";
 import { API_BASE } from "../apiConfig.js";
@@ -17,7 +18,16 @@ function Login({ setCurrentUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signupmodalOpen, setSignupModalOpen] = useState(false);
-  const [signupRole, setSignupRole] = useState("employee"); 
+  const [signupRole, setSignupRole] = useState("employee");
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotRole, setForgotRole] = useState("employee");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotRequestId, setForgotRequestId] = useState(null);
+  const [waitingApproval, setWaitingApproval] = useState(false);
+  const [resetStep, setResetStep] = useState("request"); // "request", "waiting", "reset"
+  const [newPassword, setNewPassword] = useState("");
+  const [newEmail, setNewEmail] = useState("");
 
   // For signup
   const nameRef = useRef();
@@ -80,7 +90,7 @@ function Login({ setCurrentUser }) {
     }
 
     try {
-      await axios.post(`${apiConfig}/signup`, newUser);
+      await axios.post(`${API_BASE}/signup`, newUser);
       alert("User successfully registered! You can now log in.");
       resetForm();
     } catch (error) {
@@ -93,6 +103,77 @@ function Login({ setCurrentUser }) {
       setSignupModalOpen(false); // Always close modal after submit
     }
   }
+
+  const handleForgotSubmit = async (e) => {
+    e.preventDefault();
+    setForgotLoading(true);
+    try {
+      // Check if email exists
+      const res = await axios.post(`${API_BASE}/forgot-password-request`, {
+        email: forgotEmail,
+        role: forgotRole,
+      });
+      setForgotRequestId(res.data.requestId);
+      setResetStep("waiting");
+      setWaitingApproval(true);
+      pollApproval(res.data.requestId);
+    } catch (err) {
+      alert(
+        err.response?.data?.error ||
+          "Failed to send request. Please try again."
+      );
+      setForgotOpen(false);
+    }
+    setForgotLoading(false);
+  };
+
+  const pollApproval = (requestId) => {
+    let interval = setInterval(async () => {
+      const res = await axios.get(
+        `${API_BASE}/password-reset-requests/${requestId}/status`
+      );
+      if (res.data.status === "approved") {
+        clearInterval(interval);
+        setWaitingApproval(false);
+        setResetStep("reset");
+      } else if (
+        res.data.status === "rejected" ||
+        res.data.status === "not_found"
+      ) {
+        clearInterval(interval);
+        setWaitingApproval(false);
+        alert("Your request was rejected or not found.");
+        setForgotOpen(false);
+      }
+    }, 3000);
+  };
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    if (!newPassword) {
+      alert("Please enter a new password.");
+      return;
+    }
+    try {
+      await axios.post(`${API_BASE}/reset-password`, {
+        email: forgotEmail,
+        newPassword,
+        newEmail: newEmail && newEmail !== forgotEmail ? newEmail : undefined,
+      });
+      alert("Password/email updated! You can now log in.");
+      setForgotOpen(false);
+      setResetStep("request");
+      setForgotEmail("");
+      setForgotRole("employee");
+      setNewPassword("");
+      setNewEmail("");
+    } catch (err) {
+      alert(
+        err.response?.data?.error ||
+        "Failed to reset password/email. Please try again."
+      );
+    }
+  };
 
   const resetForm = () => {
     [nameRef, emailRef, passwordRef].forEach((ref) => {
@@ -128,6 +209,14 @@ function Login({ setCurrentUser }) {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          <Button
+            type="button"
+            className="signup-button"
+            style={{ float: "right", marginTop: 4, marginBottom: 8 }}
+            onClick={() => setForgotOpen(true)}
+          >
+            Forgot Password?
+          </Button>
 
           <Button
             type="submit"
@@ -166,10 +255,16 @@ function Login({ setCurrentUser }) {
           </Button>
         </div>
 
-        <Dialog open={signupmodalOpen} onClose={signupmodalClose} maxWidth="sm" fullWidth>
+        <Dialog
+          open={signupmodalOpen}
+          onClose={signupmodalClose}
+          maxWidth="sm"
+          fullWidth
+        >
           <form onSubmit={handleSignupBtn}>
             <DialogTitle>
-              Signup as {signupRole.charAt(0).toUpperCase() + signupRole.slice(1)}
+              Signup as{" "}
+              {signupRole.charAt(0).toUpperCase() + signupRole.slice(1)}
             </DialogTitle>
             <DialogContent>
               <TextField
@@ -199,7 +294,11 @@ function Login({ setCurrentUser }) {
               />
             </DialogContent>
             <DialogActions>
-              <Button onClick={signupmodalClose} color="secondary" type="button">
+              <Button
+                onClick={signupmodalClose}
+                color="secondary"
+                type="button"
+              >
                 Cancel
               </Button>
               <Button variant="contained" type="submit">
@@ -207,6 +306,100 @@ function Login({ setCurrentUser }) {
               </Button>
             </DialogActions>
           </form>
+        </Dialog>
+
+        <Dialog open={forgotOpen} onClose={() => setForgotOpen(false)} maxWidth="xs" fullWidth>
+          {resetStep === "request" && (
+            <form onSubmit={handleForgotSubmit}>
+              <DialogTitle>Forgot Password</DialogTitle>
+              <DialogContent>
+                <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+                  Enter your email and role. An admin will be notified to approve your password reset request.
+                </Typography>
+                <TextField
+                  label="Email"
+                  type="email"
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  required
+                  value={forgotEmail}
+                  onChange={e => setForgotEmail(e.target.value)}
+                />
+                <TextField
+                  label="Role"
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  select
+                  SelectProps={{ native: true }}
+                  value={forgotRole}
+                  onChange={e => setForgotRole(e.target.value)}
+                >
+                  <option value="employee">Employee</option>
+                  <option value="cashier">Cashier</option>
+                </TextField>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setForgotOpen(false)} color="secondary" type="button">
+                  Cancel
+                </Button>
+                <Button variant="contained" type="submit" disabled={forgotLoading}>
+                  {forgotLoading ? "Sending..." : "Send Request"}
+                </Button>
+              </DialogActions>
+            </form>
+          )}
+          {resetStep === "waiting" && (
+            <DialogContent style={{ textAlign: "center", padding: "2rem" }}>
+              <Typography variant="h6" gutterBottom>
+                Waiting for admin approval...
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Please wait while an admin reviews your request.
+              </Typography>
+              <div className="modal-loading-spinner" style={{ margin: "2rem auto" }}>
+                <span className="loader"></span>
+              </div>
+            </DialogContent>
+          )}
+          {resetStep === "reset" && (
+            <form onSubmit={handleResetPassword}>
+              <DialogTitle>Reset Password / Email</DialogTitle>
+              <DialogContent>
+                <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+                  Your request was approved! Enter your new password and (optionally) a new Gmail address.
+                </Typography>
+                <TextField
+                  label="New Password"
+                  type="password"
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  required
+                  value={newPassword}
+                  onChange={e => setNewPassword(e.target.value)}
+                />
+                <TextField
+                  label="New Gmail (optional)"
+                  type="email"
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  value={newEmail}
+                  onChange={e => setNewEmail(e.target.value)}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setForgotOpen(false)} color="secondary" type="button">
+                  Cancel
+                </Button>
+                <Button variant="contained" type="submit">
+                  Change Password/Email
+                </Button>
+              </DialogActions>
+            </form>
+          )}
         </Dialog>
       </div>
     </div>

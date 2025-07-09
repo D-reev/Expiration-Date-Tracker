@@ -91,6 +91,17 @@
   z-index: 1;
 }
 
+/* Summary cards styles */
+.summary-cards {
+    margin-bottom: 2rem;
+}
+.summary-card {
+    transition: box-shadow 0.2s;
+}
+.summary-card:hover {
+    box-shadow: 0 4px 16px rgba(25, 118, 210, 0.15);
+}
+
 /* Responsive styles */
 @media (max-width: 700px) {
     .home-container {
@@ -113,76 +124,114 @@
 }
 
 .about-section {
-  margin-top: 1280px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-bottom: 40px;
-}
-
-.about-container {
   background: #26415e;
   color: #fff;
-  padding: 32px 28px;
-  border-radius: 16px;
-  max-width: 700px;
+  padding: 2rem 0;
   width: 100%;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.about-title {
+.about-7eleven-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 1400px;
+  width: 100%;
+  gap: 32px;
+}
+
+.about-7eleven-cols {
+  display: flex;
+  flex: 3;
+  width: 75%;
+}
+
+.about-7eleven-col {
+  flex: 1;
+}
+
+.about-7eleven-logo-status {
+  flex: 1;
+  min-width: 220px;
   text-align: center;
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin-bottom: 18px;
-  letter-spacing: 1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.about-subtitle {
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-bottom: 10px;
-  color: #f9d923;
+.branch-status-box {
+  margin-top: 24px;
+  background: #003153;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: left;
+  width: 100%;
+  max-width: 260px;
 }
 
-.about-description {
-  font-size: 1.05rem;
-  margin-bottom: 18px;
-  line-height: 1.7;
+.branch-status-box h4 {
+  margin: 0 0 0.5rem 0;
+  text-align: center;
 }
 
-.about-section-title {
-  font-size: 1.1rem;
-  margin-top: 18px;
-  margin-bottom: 8px;
-  color: #f9d923;
+.branch-status-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.about-list {
-  margin-left: 18px;
-  margin-bottom: 12px;
-  line-height: 1.7;
+.branch-status-online {
+  color: limegreen;
+  font-weight: bold;
 }
 
-.about-list li {
-  margin-bottom: 6px;
+.branch-status-offline {
+  color: red;
+  font-weight: bold;
 }
 
-.about-future {
-  margin-top: 18px;
-  font-size: 1rem;
-  color: #ffe082;
-  font-style: italic;
+.branch-status-checking {
+  color: #888;
+  font-weight: bold;
 }
 
-@media (max-width: 800px) {
-  .about-container {
-    padding: 18px 8px;
-    max-width: 98vw;
-  }
-  .about-title {
-    font-size: 1.5rem;
-  }
+.about-7eleven-logo {
+  width: 120px;
+  margin-bottom: 16px;
+}
+
+/* Footer bar */
+.about-footer-bar {
+  border-top: 1px solid #26415e;
+  margin: 2rem 0 0 0;
+  width: 100%;
+}
+
+.about-footer-links {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 0;
+  font-size: 0.95rem;
+  color: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  background: #26415e;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+}
+.about-footer-links span {
+  color: #fff;
+  font-weight: 500;
+}
+.about-footer-links span:not(:last-child)::after {
+  content: "|";
+  margin: 0 8px;
+  color: #fff;
 }
 
 .footer-section {
