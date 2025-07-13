@@ -7,8 +7,9 @@ import Dashboard from "./pages/Dashboard";
 import Inventory from "./pages/Inventory";
 import ExpiredProducts from "./pages/ExpiredProducts";
 import UserManagement from "./pages/UserManagement";
-import AdminLogs from "./pages/AdminLogs";
+import Approval from "./pages/Approval.jsx";
 import Cashier from "./pages/Cashier";
+import Sidebar from "./pages/Sidebar";
 import axios from "axios";
 import { API_BASE } from "./apiConfig.js";
 
@@ -98,12 +99,12 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Navigate to="/login" replace />} />
                         <Route path="/login" element={<Login setCurrentUser={setCurrentUser} />} />
-                        <Route path="/dashboard" element={currentUser ? <Dashboard currentUser={currentUser} /> : <Navigate to="/login" />} />
-                        <Route path="/inventory" element={currentUser ? <Inventory currentUser={currentUser} /> : <Navigate to="/login" />} />
-                        <Route path="/expiredproducts" element={currentUser ? <ExpiredProducts currentUser={currentUser} /> : <Navigate to="/login" />} />
-                        <Route path="/usermanagement" element={currentUser ? <UserManagement currentUser={currentUser} /> : <Navigate to="/login" />} />
-                        <Route path="/adminlogs" element={currentUser ? <AdminLogs currentUser={currentUser} /> : <Navigate to="/login" />} />
-                        <Route path="/cashier" element={currentUser ? <Cashier currentUser={currentUser} /> : <Navigate to="/login" />} />
+                        <Route path="/dashboard" element={currentUser ? <><Sidebar currentUser={currentUser} /><Dashboard currentUser={currentUser} /></> : <Navigate to="/login" />} />
+                        <Route path="/inventory" element={currentUser ? <><Sidebar currentUser={currentUser} /><Inventory currentUser={currentUser} /></> : <Navigate to="/login" />} />
+                        <Route path="/approval" element={currentUser && currentUser.role === "admin" ? <><Sidebar currentUser={currentUser} /><Approval currentUser={currentUser} /></> : <Navigate to="/login" />} />
+                        <Route path="/expiredproducts" element={currentUser ? <><Sidebar currentUser={currentUser} /><ExpiredProducts currentUser={currentUser} /></> : <Navigate to="/login" />} />
+                        <Route path="/usermanagement" element={currentUser ? <><Sidebar currentUser={currentUser} /><UserManagement currentUser={currentUser} /></> : <Navigate to="/login" />} />
+                        <Route path="/cashier" element={currentUser ? <><Sidebar currentUser={currentUser} /><Cashier currentUser={currentUser} /></> : <Navigate to="/login" />} />
                         <Route path="*" element={<h1>404 - Page Not Found</h1>} />
                     </Routes>
                 )}

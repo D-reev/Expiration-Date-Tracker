@@ -98,23 +98,22 @@ function Sidebar() {
             </NavLink>
             
             {currentUser && currentUser.role === "admin" && (
-              <NavLink
-                to="/usermanagement"
-                className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
-              >
-                <PersonAddIcon className='icon'/>
-                User Management
-              </NavLink>
-            )}
-
-            {currentUser && currentUser.role === "admin" && (
-              <NavLink
-                to="/adminlogs"
-                className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
-              >
-                <ReorderIcon className='icon'/>
-                Logs
-              </NavLink>
+              <>
+                <NavLink
+                  to="/approval"
+                  className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
+                >
+                  <ReorderIcon className="icon" />
+                  Approval
+                </NavLink>
+                <NavLink
+                  to="/usermanagement"
+                  className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
+                >
+                  <PersonAddIcon className='icon'/>
+                  User Management
+                </NavLink>
+              </>
             )}
 
             <div

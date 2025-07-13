@@ -46,18 +46,23 @@ function Cashier() {
     return matchesCategory && matchesSearch;
   });
 
-  // Add product to cart
   const addToCart = (product) => {
     setCart((prev) => {
       const found = prev.find((item) => item.prodid === product.prodid);
       if (found) {
-        return prev.map((item) =>
-          item.prodid === product.prodid
-            ? { ...item, qty: item.qty + 1 }
-            : item
-        );
+        if (found.qty < product.quantity) {
+          return prev.map((item) =>
+            item.prodid === product.prodid
+              ? { ...item, qty: item.qty + 1 }
+              : item
+          );
+        } else {
+          return prev;
+        }
       }
-      return [...prev, { ...product, qty: 1 }];
+      return product.quantity > 0
+        ? [...prev, { ...product, qty: 1 }]
+        : prev;
     });
   };
 
@@ -166,9 +171,13 @@ function Cashier() {
                   fullWidth
                   sx={{ mt: 1, borderRadius: 3, fontWeight: 600 }}
                   onClick={() => addToCart(product)}
-                  disabled={product.quantity <= 0}
+                  disabled={product.quantity <= 0 || !product.approved || product.price == null}
                 >
-                  {product.quantity > 0 ? "Add to Cart" : "Out of Stock"}
+                  {product.quantity > 0
+                    ? (!product.approved || product.price == null
+                        ? "Pending Approval"
+                        : "Add to Cart")
+                    : "Out of Stock"}
                 </Button>
               </Paper>
             ))

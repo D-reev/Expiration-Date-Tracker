@@ -74,7 +74,7 @@ function Inventory() {
 
     async function fetchProducts() {
       try {
-        const response = await axios.get(`${API_BASE}/fetchproductsmongo`);
+        const response = await axios.get(`${API_BASE}/fetchallproductsmongo`);
         if (response.status === 200) {
           setProducts(response.data); 
         } else {
@@ -226,6 +226,8 @@ function Inventory() {
                 <TableCell><strong>Unit</strong></TableCell>
                 <TableCell><strong>Date Added</strong></TableCell>
                 <TableCell><strong>Expiration Date</strong></TableCell>
+                <TableCell><strong>Status</strong></TableCell>
+                <TableCell><strong>Price</strong></TableCell> {/* Add this */}
                 <TableCell><strong>Actions</strong></TableCell>
               </TableRow>
             </TableHead>
@@ -241,6 +243,18 @@ function Inventory() {
                     <TableCell>{product.expiry_date}</TableCell>
                     <TableCell>{product.added_date}</TableCell>
                     <TableCell>
+                      {product.approved
+                        ? <span style={{ color: "green", fontWeight: 500 }}>Approved</span>
+                        : <span style={{ color: "orange", fontWeight: 500 }}>Pending Approval</span>
+                      }
+                    </TableCell>
+                    <TableCell>
+                      {product.approved && product.price != null
+                        ? `₱${Number(product.price).toFixed(2)}`
+                        : <span style={{ color: "orange" }}>Pending</span>
+                      }
+                    </TableCell>
+                    <TableCell>
                       <IconButton color="primary" onClick={() => handleOpenEditModal(product)}>
                         <EditIcon />
                       </IconButton>
@@ -252,7 +266,7 @@ function Inventory() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={8} align="center">No products found</TableCell>
+                  <TableCell colSpan={10} align="center">No products found</TableCell>
                 </TableRow>
               )}
             </TableBody>

@@ -9,6 +9,8 @@ const productSchema = new mongoose.Schema({
     expiry_date: { type: String, required: true },
     added_date: { type: String, required: true },
     notification_sent: { type: Boolean, default: false },
+    approved: { type: Boolean, default: false },
+    price: { type: Number, default: null },
 });
 
 module.exports = mongoose.model("Product", productSchema);

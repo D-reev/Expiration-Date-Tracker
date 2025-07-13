@@ -1,60 +1,69 @@
-/* Container for the entire page */
+/* Updated Color Palette */
+:root {
+  --primary-dark: #232d36;
+  --primary-medium: #3a5a40;
+  --primary-light: #588157;
+  --secondary: #bfc9c9;
+  --background: #dad7cd;
+  --white: #fff;
+  --gray: #f4f4f4;
+  --black: #222;
+}
+
+/* Page Background */
 .container {
   width: 100vw;
   min-height: 100vh;
-  --s: 200px;
-  --c1: #1d1d1d;
-  --c2: #4e4f51;
-  --c3: #3c3c3c;
-  background: repeating-conic-gradient(
-        from 30deg,
-        #0000 0 120deg,
-        var(--c3) 0 180deg
-      )
-      calc(0.5 * var(--s)) calc(0.5 * var(--s) * 0.577),
-    repeating-conic-gradient(
-      from 30deg,
-      var(--c1) 0 60deg,
-      var(--c2) 0 120deg,
-      var(--c3) 0 180deg
-    );
-  background-size: var(--s) calc(var(--s) * 0.577);
+  background: linear-gradient(135deg, var(--background) 0%, var(--gray) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Form container */
+/* Login Card */
 .form-container {
-  width: 420px;
-  border-radius: 0.75rem;
-  background-color: rgba(17, 24, 39, 1);
-  padding: 2rem;
-  color: rgba(243, 244, 246, 1);
+  width: 400px;
+  border-radius: 1.5rem;
+  background: var(--white);
+  padding: 2.5rem 2rem 2rem 2rem;
+  color: var(--primary-dark);
   margin: 0 auto;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(52, 78, 65, 0.10), 0 1.5px 0 var(--secondary);
+  border: 2.5px solid var(--primary-light);
+  position: relative;
+}
+
+/* 7-Eleven Logo (use your eleben.png in the public or assets folder) */
+.form-container::before {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 80px;
+  background: url('src/pages/img/eleben.jpg') no-repeat center/contain;
+  margin: 0 auto 1.5rem auto;
 }
 
 /* Title styling */
 .title {
   text-align: center;
-  font-size: 1.5rem;
-  line-height: 2rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+  margin-bottom: 1.5rem;
+  letter-spacing: 1px;
 }
 
 /* Input group styling */
 .input-group {
   margin-top: 1rem;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
+  font-size: 0.95rem;
 }
 
 .input-group label {
   display: block;
-  color: rgba(156, 163, 175, 1);
+  color: var(--primary-medium);
   margin-bottom: 0.5rem;
+  font-weight: 600;
 }
 
 /* Input fields */
@@ -62,56 +71,69 @@
 .input-group input {
   width: 100%;
   padding: 0.75rem 1rem;
-  color: rgba(243, 244, 246, 1);
+  color: var(--primary-dark);
   font-size: 1rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  border: 1.5px solid var(--primary-light);
+  border-radius: 0.5rem;
+  background: var(--background);
+  margin-bottom: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .inputText:focus,
 .input-group input:focus {
-  border-color: rgba(167, 139, 250);
-  box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.2);
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 2px rgba(163, 177, 138, 0.15);
+  outline: none;
 }
 
 /* Form buttons */
 .form-button {
   width: 100%;
   padding: 0.75rem;
-  background-color: rgba(167, 139, 250, 1);
-  color: rgba(17, 24, 39, 1);
+  background: #588157;
+  color: var(--white);
   border: none;
-  border-radius: 0.375rem;
-  font-size: 1rem;
+  border-radius: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background 0.3s;
   margin-bottom: 0.5rem;
+  box-shadow: 0 2px 8px rgba(52, 78, 65, 0.08);
+  letter-spacing: 0.5px;
 }
 
 .form-button:hover {
-  background-color: rgba(128, 104, 216, 1);
+  background:#588157;
 }
 
 /* Signup link */
 .signup {
   text-align: center;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  color: rgba(156, 163, 175, 1);
-  margin-top: 1rem;
+  font-size: 1rem;
+  color: var(--primary-medium);
+  margin-top: 1.5rem;
+  font-weight: 600;
 }
 
 .signup-button {
-  background: none;
+  background: var(--secondary);
   border: none;
-  color: rgba(167, 139, 250, 1);
-  font-size: 0.875rem;
+  color: var(--primary-dark);
+  font-size: 1rem;
   cursor: pointer;
-  text-decoration: underline;
-  outline: none; /* Removes the outline */
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  margin: 0 0.5rem;
+  font-weight: 700;
+  transition: background 0.2s, color 0.2s;
+  outline: none;
 }
 
 .signup-button:hover {
-  color: rgba(128, 104, 216, 1);
+  background: var(--primary-medium);
+  color: var(--white);
 }
 
 /* Dialog/modal styles */
@@ -121,7 +143,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(52, 78, 65, 0.15);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -130,12 +152,13 @@
 
 .modal-content {
   width: 420px;
-  border-radius: 0.75rem;
-  background-color: rgba(17, 24, 39, 1);
+  border-radius: 1rem;
+  background-color: var(--white);
   padding: 2rem;
-  color: rgba(243, 244, 246, 1);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: var(--primary-dark);
+  box-shadow: 0 4px 16px rgba(52, 78, 65, 0.10);
   margin: 0 auto;
+  border: 2px solid var(--primary-light);
 }
 
 .close-modal-button {
@@ -144,46 +167,264 @@
   right: 15px;
   font-size: 1.5rem;
   cursor: pointer;
-  color: rgba(243, 244, 246, 1);
+  color: var(--primary-medium);
   background: none;
   border: none;
-  outline: none; /* Removes the outline */
+  outline: none;
 }
 
-/* Google sign-in styles */
-.signup-with-google {
+/* Back to dashboard button */
+.back-dashboard-btn {
+  position: static !important;
+  margin-bottom: 1.5rem;
+  margin-left: 0;
+  z-index: 100 !important;
+  background: var(--white) !important;
+  color: var(--primary-dark) !important;
+  border: 2px solid var(--primary-medium) !important;
+  padding: 8px 16px !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px var(--secondary) !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Inventory Content */
+.inventory-content {
+  flex: 1;
+  min-height: 100vh;
+  padding: 2rem 1.5rem 2rem 1.5rem;
+  background: none;
+  margin: 0 0 0 10px;
+  box-sizing: border-box;
+  overflow-x: auto;
+  max-width: 100%;
+  padding-top: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Navbar styles (added) */
+.navbar {
+  position: relative;
+}
+
+/* Login split layout */
+.login-root {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+}
+
+.login-left {
+  flex: 1.2;
+  background: #232d36;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 1rem;
-  font-size: 0.875rem;
-  line-height: 1.25rem; 
-  color: rgba(156, 163, 175, 1);
+  min-width: 350px;
+  position: relative;
 }
 
-.signin-google {
+.login-bg-img {
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+}
+
+.login-right {
+  flex: 1;
+  background: linear-gradient(135deg, #232d36 0%, #3a5a40 100%);
   display: flex;
+  align-items: center;
   justify-content: center;
-  margin-top: 1rem;
+  min-width: 400px;
 }
 
-.signin-google .MuiIconButton-root {
-  color: white; /* Changes icon color to white */
-  outline: none; /* Removes the outline */
+.login-form-wrapper {
+  width: 100%;
+  max-width: 370px;
+  background: rgba(35, 45, 54, 0.97);
+  border-radius: 18px;
+  padding: 40px 36px 32px 36px;
+  box-shadow: 0 8px 32px rgba(52,78,65,0.18);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
-/* Loader styles */
-.loader {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #26415e;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  animation: spin 1s linear infinite;
-  display: inline-block;
+.login-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: #fff;
+  text-align: left;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg);}
-  100% { transform: rotate(360deg);}
+.inputText label,
+.inputText input {
+  color: #fff !important;
+}
+
+.inputText .MuiOutlinedInput-root {
+  background: #3a5a40;
+  border-radius: 8px;
+}
+
+.inputText .MuiOutlinedInput-notchedOutline {
+  border-color: #588157;
+}
+
+.inputText .Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #bfc9c9;
+}
+
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 0.97rem;
+  color: #bfc9c9;
+}
+
+.forgot-link {
+  color: #588157;
+  text-decoration: none;
+  font-size: 0.97rem;
+}
+
+.form-button.main-login-btn {
+  background: #588157 !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+  font-size: 1.1rem !important;
+  margin-top: 22px !important;
+  margin-bottom: 18px !important;
+  box-shadow: none !important;
+  letter-spacing: 1px;
+  transition: background 0.3s;
+}
+
+.form-button.main-login-btn:hover {
+  background: #3a5a40 !important;
+}
+
+.signup-section {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.signup-title {
+  color: #bfc9c9;
+  font-size: 1.1rem;
+  margin-bottom: 14px;
+  text-align: center;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.signup-button{
+  background: #588157 !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+  font-size: 1.08rem !important;
+  margin-bottom: 12px !important;
+  box-shadow: 0 2px 8px rgba(52,78,65,0.10) !important;
+  letter-spacing: 1px;
+  transition: background 0.2s;
+}
+
+.signup-button:hover {
+  background: #3a5a40 !important;
+  color: #fff !important;
+}
+
+@media (max-width: 900px) {
+  .login-root {
+    flex-direction: column;
+  }
+  .login-left, .login-right {
+    min-width: 100vw;
+    width: 100vw;
+  }
+  .login-bg-img {
+    height: 220px;
+  }
+  .login-form-wrapper {
+    max-width: 98vw;
+    padding: 28px 8vw 24px 8vw;
+  }
+  
+  /* Modal/Dialog styles to match login page */
+  .MuiDialog-paper {
+    background: rgba(35, 45, 54, 0.97) !important;
+    color: #fff !important;
+    border-radius: 18px !important;
+    box-shadow: 0 8px 32px rgba(52,78,65,0.18) !important;
+    padding: 32px 28px 24px 28px !important;
+  }
+  
+  .MuiDialogTitle-root {
+    color: #fff !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 1px;
+    text-align: left;
+    padding-bottom: 0 !important;
+  }
+  
+  .MuiDialogContent-root {
+    color: #fff !important;
+    background: none !important;
+    padding-top: 8px !important;
+  }
+  
+  .MuiDialogActions-root {
+    background: none !important;
+    padding-bottom: 16px !important;
+  }
+  
+  .MuiButton-root,
+  .MuiButton-contained {
+    background: #588157 !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    font-size: 1.08rem !important;
+    box-shadow: 0 2px 8px rgba(52,78,65,0.10) !important;
+    letter-spacing: 1px;
+    transition: background 0.2s;
+  }
+  
+  .MuiButton-root:hover,
+  .MuiButton-contained:hover {
+    background: #3a5a40 !important;
+    color: #fff !important;
+  }
+  
+  .MuiTextField-root label,
+  .MuiTextField-root input,
+  .MuiTextField-root .MuiInputBase-input {
+    color: #fff !important;
+  }
+  
+  .MuiOutlinedInput-root {
+    background: #3a5a40 !important;
+    border-radius: 8px !important;
+  }
+  
+  .MuiOutlinedInput-notchedOutline {
+    border-color: #588157 !important;
+  }   
+  
+  .Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #bfc9c9 !important;
+  }
 }

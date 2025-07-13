@@ -11,6 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
+import Eleben from "./img/eleben.png";
 import { API_BASE } from "../apiConfig.js";
 
 function Login({ setCurrentUser }) {
@@ -182,7 +183,14 @@ function Login({ setCurrentUser }) {
   };
 
   return (
-    <div className="container">
+    <div className="login-root">
+        <div className="login-left">
+        <img
+          src={Eleben}
+          alt="Background"
+          className="login-bg-img"
+        />
+      </div>
       <div className="form-container">
         <p className="title">Login</p>
         <form className="input-group" onSubmit={handleLoginBtn}>
@@ -228,7 +236,7 @@ function Login({ setCurrentUser }) {
           </Button>
         </form>
 
-        <div className="signup">
+        <div className="signup-title">
           <h1>Sign Up as :</h1>
           <Button
             className="signup-button"

@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const User = require("./user.model");
 const Product = require("./product.model");
-const Log = require("./logs.model");
 const http = require("http");
 const { Server } = require("socket.io");
 const bcrypt = require("bcrypt");
@@ -43,29 +42,29 @@ function logProductData(action, product) {
     console.log();
 }
 
+// Fetch only approved products for inventory
 app.get("/fetchproductsmongo", async (req, res) => {
     try {
-      const products = await Product.find({});
-      res.json(products);
+        const products = await Product.find({ approved: true });
+        res.json(products);
     } catch (err) {
-      console.error("Fetch error:", err);
-      res.status(500).send("Internal server error");
+        res.status(500).send("Internal server error");
     }
-  });
+});
 
+// Add product request (not directly to inventory)
 app.post("/addproductmongo", async (req, res) => {
     try {
-        // Find the last product and get the highest prodid
         const lastProduct = await Product.findOne().sort({ prodid: -1 }).exec();
-        const nextProdId = lastProduct ? lastProduct.prodid + 1 : 1; // Increment prodid as a number
+        const nextProdId = lastProduct ? lastProduct.prodid + 1 : 1;
 
-        const { prodname, category, quantity, unit, expiry_date, added_date, notification_sent } = req.body;
+        const { prodname, category, quantity, unit, expiry_date, added_date, notification_sent, requestedBy } = req.body;
 
         const formattedExpiryDate = new Date(expiry_date).toISOString().slice(0, 10);
         const formattedAddedDate = new Date(added_date).toISOString().slice(0, 10);
 
         const newProduct = new Product({
-            prodid: nextProdId, // Use the numeric prodid
+            prodid: nextProdId,
             prodname,
             category,
             quantity,
@@ -73,21 +72,14 @@ app.post("/addproductmongo", async (req, res) => {
             expiry_date: formattedExpiryDate,
             added_date: formattedAddedDate,
             notification_sent,
+            approved: false,
+            price: null,
+            requestedBy,
         });
-        //test
-            await createLog(
-            "add", 
-            newProduct.prodid, 
-            newProduct.prodname, 
-            req.user?.email || "system" // or use req.user.name depending on your auth
-            );
-
 
         await newProduct.save();
 
-        logProductData("Added", newProduct);
-
-        return res.status(201).json({ message: "Product added successfully", product: newProduct });
+        return res.status(201).json({ message: "Product request submitted for approval", product: newProduct });
     } catch (error) {
         console.error("Error adding product:", error);
         return res.status(500).json({ message: "Error adding product" });
@@ -130,15 +122,6 @@ app.delete("/deleteproductmongo/:prodid", async (req, res) => {
         if (!deletedProduct) {
             return res.status(404).json({ message: "Product not found" });
         }
-
-        if (deletedProduct) {
-      // Log the deletion
-         await createLog(
-        "delete",
-        deletedProduct.prodid,
-        deletedProduct.prodname,
-        req.user?.email || "system"
-        )};
 
         res.status(200).json({ message: "Product deleted successfully", product: deletedProduct });
     } catch (error) {
@@ -280,77 +263,6 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.get("/logs", async (req, res) => {
-  try {
-    const { 
-      action, 
-      prodid, 
-      user, 
-      startDate, 
-      endDate,
-      sort = '-date', // Default: newest first
-      limit = 50
-    } = req.query;
-
-    // Build query
-    const query = {};
-    if (action) query.action = action;
-    if (prodid) query.prodid = prodid;
-    if (user) query.user = { $regex: user, $options: 'i' };
-    
-    // Date range filtering
-    if (startDate || endDate) {
-      query.date = {};
-      if (startDate) query.date.$gte = new Date(startDate);
-      if (endDate) query.date.$lte = new Date(endDate);
-    }
-
-    // Execute query
-    const logs = await Log.find(query)
-      .sort(sort)
-      .limit(parseInt(limit));
-
-    res.json(logs);
-  } catch (err) {
-    console.error("Error fetching logs:", err);
-    res.status(500).json({ error: "Failed to fetch logs" });
-  }
-});
-
-app.delete("/logs/:id", async (req, res) => {
-  try {
-    // Basic admin check (you should implement proper auth middleware)
-    if (!req.user || req.user.role !== 'admin') {
-      return res.status(403).json({ error: "Admin access required" });
-    }
-
-    const deletedLog = await Log.findByIdAndDelete(req.params.id);
-    if (!deletedLog) {
-      return res.status(404).json({ error: "Log not found" });
-    }
-
-    res.json({ message: "Log deleted successfully" });
-  } catch (err) {
-    console.error("Error deleting log:", err);
-    res.status(500).json({ error: "Failed to delete log" });
-  }
-});
-
-// Enhanced log creation helper (to be used in other routes)
-const createLog = async (action, prodid, prodname, user) => {
-  try {
-    await Log.create({ 
-      action, 
-      prodid, 
-      prodname, 
-      user,
-      date: new Date()
-    });
-  } catch (err) {
-    console.error("Error creating log:", err);
-  }
-};
-
 app.get("/expiredproducts/count", async (req, res) => {
   try {
     const today = new Date().toISOString().slice(0, 10);
@@ -412,6 +324,47 @@ app.post("/reset-password", async (req, res) => {
   }
   await user.save();
   res.json({ message: "Password/email updated" });
+});
+
+// Get all pending product requests
+app.get("/pending-products", async (req, res) => {
+  try {
+    const pendingProducts = await Product.find({ approved: false });
+    res.json(pendingProducts);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching pending products" });
+  }
+});
+
+// Approve product and set price
+app.post("/approve-product/:prodid", async (req, res) => {
+    try {
+        const { price } = req.body;
+        if (typeof price !== "number" || price <= 0) {
+            return res.status(400).json({ message: "Valid price required" });
+        }
+        const updatedProduct = await Product.findOneAndUpdate(
+            { prodid: req.params.prodid, approved: false },
+            { approved: true, price },
+            { new: true }
+        );
+        if (!updatedProduct) {
+            return res.status(404).json({ message: "Pending product not found" });
+        }
+        res.json({ message: "Product approved and added to inventory", product: updatedProduct });
+    } catch (error) {
+        res.status(500).json({ message: "Error approving product" });
+    }
+});
+
+// Fetch all products (approved and pending)
+app.get("/fetchallproductsmongo", async (req, res) => {
+    try {
+        const products = await Product.find();
+        res.json(products);
+    } catch (err) {
+        res.status(500).send("Internal server error");
+    }
 });
 
 // Start the server
