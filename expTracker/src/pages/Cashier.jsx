@@ -8,6 +8,10 @@ import {
   Paper,
   IconButton,
   Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import Sidebar from "./Sidebar";
 import AddIcon from "@mui/icons-material/Add";
@@ -21,6 +25,12 @@ function Cashier() {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [cart, setCart] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [bankDetails, setBankDetails] = useState({
+    accountNumber: "",
+    accountName: "",
+    bankName: "",
+  });
 
   useEffect(() => {
     fetchProducts();
@@ -83,6 +93,20 @@ function Cashier() {
     0
   );
   const tax = subTotal * 0.05;
+
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+
+  const handleBankInputChange = (e) => {
+    setBankDetails({ ...bankDetails, [e.target.name]: e.target.value });
+  };
+
+  const handleProcessPayment = () => {
+    // Add your payment logic here
+    setOpenModal(false);
+    // Optionally reset bank details
+    setBankDetails({ accountNumber: "", accountName: "", bankName: "" });
+  };
 
   return (
     <div className="inventory-container cashier-flex">
@@ -253,10 +277,63 @@ function Cashier() {
           fullWidth
           sx={{ borderRadius: 3, fontWeight: 700, py: 1.5 }}
           disabled={cart.length === 0}
+          onClick={handleOpenModal}
         >
-          Order Now
+          Cash Out
         </Button>
       </aside>
+
+      {/* Bank Details Modal */}
+      <Dialog open={openModal} onClose={handleCloseModal} maxWidth="xs" fullWidth>
+        <DialogTitle sx={{ fontWeight: 700 }}>Enter Bank Details for Payment</DialogTitle>
+        <DialogContent>
+          <Typography sx={{ mb: 2 }}>
+            Please provide your bank details. ₱{(subTotal + tax).toFixed(2)} will be deducted from your account.
+          </Typography>
+          <TextField
+            label="Account Number*"
+            name="accountNumber"
+            value={bankDetails.accountNumber}
+            onChange={handleBankInputChange}
+            fullWidth
+            margin="normal"
+            placeholder="Enter your account number to auto-fill account name"
+          />
+          <TextField
+            label="Account Name*"
+            name="accountName"
+            value={bankDetails.accountName}
+            onChange={handleBankInputChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Bank Name*"
+            name="bankName"
+            value={bankDetails.bankName}
+            onChange={handleBankInputChange}
+            fullWidth
+            margin="normal"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal} color="secondary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleProcessPayment}
+            variant="contained"
+            color="primary"
+            disabled={
+              !bankDetails.accountNumber ||
+              !bankDetails.accountName ||
+              !bankDetails.bankName
+            }
+          >
+            Process Payment
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
