@@ -367,6 +367,38 @@ app.get("/fetchallproductsmongo", async (req, res) => {
     }
 });
 
+// Process payment endpoint
+app.post("/api/process-payment", async (req, res) => {
+  const { accountNumber, amount, description } = req.body;
+  if (!accountNumber || !amount) {
+    return res.status(400).json({ message: "Missing accountNumber or amount" });
+  }
+  try {
+    // Find user by account number
+    const user = await User.findOne({ accountNumber });
+    if (!user) return res.status(404).json({ message: "Account not found" });
+
+    // Call BPI Bank API to subtract money
+    const response = await fetch("http://192.168.8.201:5000/api/users/transfer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        fromUserId: user.userid,
+        toAccountNumber: "BPI_CENTRAL_ACCOUNT", // Replace with your central account number
+        amount,
+        description: description || "POS Payment"
+      })
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      return res.status(400).json({ message: result.error || "Bank transfer failed" });
+    }
+    res.json({ message: "Payment processed", result });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Start the server
 server.listen(port, () => {
     console.log(`Server running on port ${port}`);
