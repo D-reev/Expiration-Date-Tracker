@@ -101,16 +101,14 @@ function Home() {
                 <div className="cards">
                     <Button className="card student" onClick={() => navigate("/inventory")}>
                         <p className="tip">INVENTORY</p>
+                        <InventoryIcon className="second-text"/>
                         <p className="stats">{totalStock}</p>
-                        <p className="label">Total Items</p>
-                        <p className="second-text"><InventoryIcon/></p>
                     </Button>
 
                     <Button className="card user" onClick={() => navigate("/expiredproducts")}>
                         <p className="tip">EXPIRED PRODUCTS</p>
+                        <AlarmOffIcon className="second-text"/>
                         <p className="stats">{expiredCount}</p>
-                        <p className="label">Expired Items</p>
-                        <p className="second-text"><AlarmOffIcon/></p>
                     </Button>
 
                     <Button className="card about" onClick={() => scrollToAbout("about-section")}>
@@ -154,9 +152,75 @@ function Home() {
                             </tbody>
                         </table>
                     </div>
-                </section>
+                </section><br/>
 
-                {/* 7-Eleven About Section */}
+                {/* Branch Status Section */}
+                <div className="branch-status-section">
+  <h2 className="status-title">Branch Status</h2>
+  <div className="branch-status-grid">
+    <div className="branch-card">
+      <img src="/img/logos/kahit-saan-logo.png" alt="Kahit Saan" className="branch-logo" />
+      <div className="branch-info">
+        <h3>Kahit Saan</h3>
+        <span className={`status-badge ${kahitSaanOnline ? "online" : "offline"}`}>
+          {kahitSaanOnline ? "Online" : "Offline"}
+        </span>
+      </div>
+    </div>
+
+    <div className="branch-card">
+      <img src="/img/logos/nbs-logo.png" alt="NBS" className="branch-logo" />
+      <div className="branch-info">
+        <h3>NBS</h3>
+        <span className={`status-badge ${nbsOnline ? "online" : "offline"}`}>
+          {nbsOnline ? "Online" : "Offline"}
+        </span>
+      </div>
+    </div>
+
+    <div className="branch-card">
+      <img src="/img/logos/blanktapes-logo.png" alt="Blanktapes" className="branch-logo" />
+      <div className="branch-info">
+        <h3>Blanktapes</h3>
+        <span className={`status-badge ${blanktapes ? "online" : "offline"}`}>
+          {blanktapes ? "Online" : "Offline"}
+        </span>
+      </div>
+    </div>
+
+    <div className="branch-card">
+      <img src="/img/logos/pnb-logo.png" alt="PNB" className="branch-logo" />
+      <div className="branch-info">
+        <h3>PNB</h3>
+        <span className={`status-badge ${pnb ? "online" : "offline"}`}>
+          {pnb ? "Online" : "Offline"}
+        </span>
+      </div>
+    </div>
+
+    <div className="branch-card">
+      <img src="/img/logos/jollibee-logo.png" alt="Jollibee" className="branch-logo" />
+      <div className="branch-info">
+        <h3>Jollibee</h3>
+        <span className={`status-badge ${jollibee ? "online" : "offline"}`}>
+          {jollibee ? "Online" : "Offline"}
+        </span>
+      </div>
+    </div>
+
+    <div className="branch-card">
+      <img src="/img/logos/dental-logo.png" alt="Dental Clinic" className="branch-logo" />
+      <div className="branch-info">
+        <h3>Dental Clinic</h3>
+        <span className={`status-badge ${dental ? "online" : "offline"}`}>
+          {dental ? "Online" : "Offline"}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+                {/* About Section - Moved below branch status */}
                 <section id="about-section" className="about-section">
   <div className="about-7eleven-row">
     <div className="about-7eleven-cols">
@@ -196,113 +260,12 @@ function Home() {
         </ul>
       </div>
     </div>
-    <div className="about-7eleven-logo-status">
-      <div>7-Eleven Logo</div>
+    <div className="about-7eleven-logo">
       <img
         src="/img/7eleven-logo.png"
         alt="7-Eleven Logo"
         className="about-7eleven-logo"
       />
-      <div className="branch-status-box">
-        <h4>Branch Status</h4>
-        <ul className="branch-status-list">
-          <li>
-            Kahit Saan:{" "}
-            <span className={
-              kahitSaanOnline === null
-                ? "branch-status-checking"
-                : kahitSaanOnline
-                ? "branch-status-online"
-                : "branch-status-offline"
-            }>
-              {kahitSaanOnline === null
-                ? "Checking..."
-                : kahitSaanOnline
-                ? "Online"
-                : "Offline"}
-            </span>
-          </li>
-          <li>
-            NBS:{" "}
-            <span className={
-              nbsOnline === null
-                ? "branch-status-checking"
-                : nbsOnline
-                ? "branch-status-online"
-                : "branch-status-offline"
-            }>
-              {nbsOnline === null
-                ? "Checking..."
-                : nbsOnline
-                ? "Online"
-                : "Offline"}
-            </span>
-          </li>
-          <li>
-            Blanktapes:{" "}
-            <span className={
-              blanktapes === null
-                ? "branch-status-checking"
-                : blanktapes
-                ? "branch-status-online"
-                : "branch-status-offline"
-            }>
-              {blanktapes === null
-                ? "Checking..."
-                : blanktapes
-                ? "Online"
-                : "Offline"}
-            </span>
-          </li>
-          <li>
-            PNB:{" "}
-            <span className={
-              pnb === null
-                ? "branch-status-checking"
-                : pnb
-                ? "branch-status-online"
-                : "branch-status-offline"
-            }>
-              {pnb === null
-                ? "Checking..."
-                : pnb
-                ? "Online"
-                : "Offline"}
-            </span>
-          </li>
-          <li>
-            Jollibee:{" "}
-            <span className={
-              jollibee === null
-                ? "branch-status-checking"
-                : jollibee
-                ? "branch-status-online"
-                : "branch-status-offline"
-            }>
-              {jollibee === null
-                ? "Checking..."
-                : jollibee
-                ? "Online"
-                : "Offline"}
-            </span>
-          </li><li>
-            Dental Clinic:{" "}
-            <span className={
-              dental === null
-                ? "branch-status-checking"
-                : dental
-                ? "branch-status-online"
-                : "branch-status-offline"
-            }>
-              {dental === null
-                ? "Checking..."
-                : dental
-                ? "Online"
-                : "Offline"}
-            </span>
-          </li>
-        </ul>
-      </div>
     </div>
   </div>
   <div className="about-footer-bar"></div>

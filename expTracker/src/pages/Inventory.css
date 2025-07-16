@@ -1,6 +1,6 @@
 /* Green-focused Color Palette */
 :root {
-  --primary-green: #00A651;
+  --primary-green: #2a7c52;
   --primary-red: #DA020E;
   --primary-orange: #FF6900;
   --white: #ffffff;
@@ -73,11 +73,10 @@
 
 /* Table Container */
 .MuiTableContainer-root {
+  margin-top: 2rem;
   background: var(--white);
   border-radius: 12px;
-  box-shadow: 0 8px 32px var(--shadow-medium);
-  margin-bottom: 32px;
-  border: 1px solid #e9ecef;
+  box-shadow: 0 4px 20px var(--shadow-light);
   overflow: hidden;
 }
 
@@ -85,88 +84,82 @@
 .MuiTableHead-root th {
   background: linear-gradient(135deg, var(--primary-green) 0%, #008a44 100%) !important;
   color: var(--white) !important;
-  padding: 1.25rem 1rem !important;
-  font-weight: 600 !important;
   font-size: 0.9rem !important;
+  font-weight: 600 !important;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-bottom: 3px solid var(--primary-green);
+  padding: 1rem 1.2rem !important;
+  border-bottom: none !important;
 }
 
 /* Table Body */
 .MuiTableBody-root td {
-  padding: 1rem !important;
-  border-bottom: 1px solid #e9ecef !important;
-  vertical-align: middle;
-  color: var(--text-primary) !important;
-  font-weight: 500 !important;
+  padding: 1rem 1.2rem !important;
   font-size: 0.95rem !important;
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid rgba(224, 224, 224, 0.4) !important;
 }
 
 /* Row Styling */
-.MuiTableRow-root:nth-child(even) td {
-  background: var(--white) !important;
+.MuiTableRow-root {
+  transition: background-color 0.2s ease;
 }
 
-.MuiTableRow-root:nth-child(odd) td {
-  background: #fafbfc !important;
+.MuiTableBody-root .MuiTableRow-root:nth-of-type(odd) {
+  background-color: rgba(0, 166, 81, 0.02);
 }
 
-.MuiTableRow-root:hover td {
-  background: rgba(0, 166, 81, 0.05) !important;
-  transform: scale(1.001);
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px var(--shadow-light);
+.MuiTableBody-root .MuiTableRow-root:hover {
+  background-color: rgba(0, 166, 81, 0.05);
 }
 
-/* Special Cell Styling */
-.product-name {
+/* Status Cell Styling */
+.status-approved {
+  color: #00a651 !important;
+  font-weight: 600 !important;
+  background: rgba(0, 166, 81, 0.1);
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.status-pending {
+  color: #ff6900 !important;
+  font-weight: 600 !important;
+  background: rgba(255, 105, 0, 0.1);
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+/* Price Cell Styling */
+.price-cell {
   font-weight: 600 !important;
   color: var(--primary-green) !important;
 }
 
-.quantity {
-  font-weight: 600 !important;
-  color: var(--primary-green) !important;
-  text-align: center;
-}
-
-.actions-cell {
-  text-align: center !important;
-}
-
-.no-products {
-  text-align: center !important;
-  color: var(--text-secondary) !important;
+.price-pending {
+  color: #ff6900 !important;
   font-style: italic;
-  padding: 3rem !important;
-  font-size: 1.1rem;
 }
 
 /* Action Buttons */
-.edit-btn {
-  background-color: var(--primary-green) !important;
-  color: var(--white) !important;
-  margin-right: 0.5rem !important;
-  transition: all 0.2s ease !important;
-  border-radius: 6px !important;
+.MuiIconButton-root {
+  padding: 8px !important;
+  margin: 0 4px !important;
+  transition: transform 0.2s ease !important;
 }
 
-.edit-btn:hover {
-  background-color: var(--primary-orange) !important;
-  transform: scale(1.1);
+.MuiIconButton-root:hover {
+  transform: scale(1.1) !important;
 }
 
-.delete-btn {
-  background-color: var(--primary-green) !important;
-  color: var(--white) !important;
-  transition: all 0.2s ease !important;
-  border-radius: 6px !important;
-}
-
-.delete-btn:hover {
-  background-color: var(--primary-red) !important;
-  transform: scale(1.1);
+/* Empty State */
+.no-products {
+  padding: 2rem !important;
+  text-align: center !important;
+  color: var(--text-secondary) !important;
+  font-style: italic;
 }
 
 /* Dialog Styling */
@@ -453,4 +446,72 @@
   font-family: 'Poppins', sans-serif !important;
   font-weight: 700 !important;
   letter-spacing: 0.8px !important;
+}
+
+/* Board Container */
+.board-container {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 32px var(--shadow-medium);
+  border: 1px solid #e9ecef;
+}
+
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--primary-green);
+}
+
+.board-title {
+  font-size: 1.8rem;
+  color: var(--primary-green);
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.board-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, var(--primary-green) 0%, #008a44 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  color: var(--white);
+  box-shadow: 0 4px 12px var(--shadow-light);
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-title {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.stat-subtitle {
+  font-size: 0.85rem;
+  opacity: 0.8;
 }

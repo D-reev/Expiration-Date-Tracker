@@ -7,6 +7,8 @@
   --white: #ffffff;
   --text-dark: #333333;
   --border-gray: #dddddd;
+  --primary-green: #3a5a40;
+  --primary-light: #f0f0f0;
 }
 
 /* ========== Layout ========== */
@@ -162,11 +164,11 @@
 
 /* ========== About Section ========== */
 .about-section {
-  background-color: var(--white);
+  background: var(--white);
+  border-radius: 16px;
   padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  margin-bottom: 40px;
+  margin-top: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .about-7eleven-row {
@@ -198,8 +200,13 @@
 }
 
 .about-7eleven-logo {
-  width: 120px;
-  margin-bottom: 16px;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.about-7eleven-logo img {
+  max-width: 200px;
+  height: auto;
 }
 
 .branch-status-box {
@@ -238,6 +245,78 @@
 .branch-status-checking {
   color: #fff; /* White for checking */
   font-weight: bold;
+}
+
+/* ========== New Branch Status Section ========== */
+.branch-status-section {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.status-title {
+  font-size: 1.8rem;
+  color: var(--primary-green);
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--primary-light);
+}
+
+.branch-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.branch-card {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.branch-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.branch-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin-right: 16px;
+  border-radius: 8px;
+}
+
+.branch-info {
+  flex: 1;
+}
+
+.branch-info h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  color: #2c3e50;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.status-badge.online {
+  background: rgba(46, 204, 113, 0.1);
+  color: #2ecc71;
+}
+
+.status-badge.offline {
+  background: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
 }
 
 /* ========== Footer Section ========== */
