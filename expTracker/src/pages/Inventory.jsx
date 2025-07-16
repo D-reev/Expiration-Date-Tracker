@@ -209,7 +209,7 @@ function Inventory() {
       <main className="content">
         
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px", alignItems: 'center', marginTop: '40px' }}>
-          <Typography variant="h4">Inventory</Typography>
+          <Typography variant="h4" className="formal-title">Inventory</Typography>
           <Button variant="contained" color="primary" onClick={() => setOpenModalAdd(true)}>
             Add Product
           </Button>

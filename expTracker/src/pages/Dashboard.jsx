@@ -11,6 +11,8 @@ import { API_BASE } from "../apiConfig.js";
 function Home() {
     const navigate = useNavigate();
     const [recentProducts, setRecentProducts] = useState([]);
+    const [totalStock, setTotalStock] = useState(0);
+    const [expiredCount, setExpiredCount] = useState(0);
 
     const scrollToAbout = (sectionId) => {
         const section = document.getElementById(sectionId);
@@ -38,6 +40,30 @@ function Home() {
         fetchRecentProducts();
     }, []);
 
+    // Fetch total stock and expired count
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const response = await fetch(`${API_BASE}/fetchproductsmongo`);
+                const data = await response.json();
+                // Calculate total stock
+                const total = data.reduce((acc, prod) => acc + (prod.quantity || 0), 0);
+                setTotalStock(total);
+
+                // Calculate expired count
+                const expired = data.filter((prod) => {
+                    const expiryDate = new Date(prod.expiry_date);
+                    return expiryDate < new Date();
+                });
+                setExpiredCount(expired.length);
+            } catch (error) {
+                setTotalStock(0);
+                setExpiredCount(0);
+            }
+        };
+        fetchStats();
+    }, []);
+
     // 7/11 branch status states
     const [activeAccordion, setActiveAccordion] = useState(null);
     const [kahitSaanOnline, setKahitSaanOnline] = useState(null);
@@ -45,6 +71,7 @@ function Home() {
     const [blanktapes, setBlanktapes] = useState(null);
     const [pnb, setPnb] = useState(null);
     const [jollibee, setJollibee] = useState(null);
+    const [dental, setDental] = useState(null);
 
     useEffect(() => {
         const checkStatus = async (url, setter) => {
@@ -60,6 +87,7 @@ function Home() {
         checkStatus('http://192.168.9.36:5173/', setBlanktapes);
         checkStatus('http://192.168.9.37:5173/', setPnb);
         checkStatus('http://192.168.9.38:5173/', setJollibee);
+        checkStatus('http://192.168.9.35:5173/', setDental);
     }, []);
 
     return (
@@ -73,11 +101,15 @@ function Home() {
                 <div className="cards">
                     <Button className="card student" onClick={() => navigate("/inventory")}>
                         <p className="tip">INVENTORY</p>
+                        <p className="stats">{totalStock}</p>
+                        <p className="label">Total Items</p>
                         <p className="second-text"><InventoryIcon/></p>
                     </Button>
 
                     <Button className="card user" onClick={() => navigate("/expiredproducts")}>
                         <p className="tip">EXPIRED PRODUCTS</p>
+                        <p className="stats">{expiredCount}</p>
+                        <p className="label">Expired Items</p>
                         <p className="second-text"><AlarmOffIcon/></p>
                     </Button>
 
@@ -250,6 +282,21 @@ function Home() {
               {jollibee === null
                 ? "Checking..."
                 : jollibee
+                ? "Online"
+                : "Offline"}
+            </span>
+          </li><li>
+            Dental Clinic:{" "}
+            <span className={
+              dental === null
+                ? "branch-status-checking"
+                : dental
+                ? "branch-status-online"
+                : "branch-status-offline"
+            }>
+              {dental === null
+                ? "Checking..."
+                : dental
                 ? "Online"
                 : "Offline"}
             </span>
