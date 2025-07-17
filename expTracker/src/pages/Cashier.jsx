@@ -47,6 +47,7 @@ function Cashier() {
     }
   }
 
+  // Use EXTERNAL BANK API for account lookup (auto-fill)
   const fetchAllAccounts = async () => {
     try {
       const res = await axios.get("http://192.168.8.201:5000/api/users");
@@ -108,27 +109,71 @@ function Cashier() {
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
+  // Auto-fill logic: match account number as string, clear if not found
   const handleBankInputChange = (e) => {
     const { name, value } = e.target;
     let updated = { ...bankDetails, [name]: value };
     if (name === "accountNumber") {
-      // Try to auto-fill
-      const found = allAccounts.find((acc) => acc.accountNumber === value);
+      const found = allAccounts.find(
+        (acc) => String(acc.accountNumber) === String(value)
+      );
       if (found) {
         updated.accountName = found.name || "";
         updated.bankName = found.bankName || "BPI";
+      } else {
+        updated.accountName = "";
+        updated.bankName = "";
       }
     }
     setBankDetails(updated);
   };
 
+  // Payment: call your backend, which will use the external bank API
   const handleProcessPayment = async () => {
     try {
-      await axios.post(`${API_BASE}/process-payment`, {
-        accountNumber: bankDetails.accountNumber,
-        amount: subTotal + tax,
+      // Fetch all users from the external bank API to get the userId
+      const usersRes = await axios.get("http://192.168.8.201:5000/api/users");
+      const users = usersRes.data;
+
+      const user = users.find(
+        (u) =>
+          String(u.accountNumber).replace(/\s+/g, "") ===
+          String(bankDetails.accountNumber).replace(/\s+/g, "")
+      );
+      if (!user || !user._id) {
+        alert("Account not found in external bank.");
+        return;
+      }
+      const amount = Number(subTotal + tax);
+      if (isNaN(amount) || amount <= 0) {
+        alert("Invalid amount.");
+        return;
+      }
+
+      // Call the external bank's transfer API directly
+      const payload = {
+        fromUserId: String(user._id),
+        toAccountNumber: String("277765984082"),
+        amount,
         description: "Expiration Date Tracker POS Payment",
-      });
+      };
+
+      await axios.post("http://192.168.8.201:5000/api/users/transfer", payload);
+
+      // Decrease product quantity after successful payment
+      setProducts((prevProducts) =>
+        prevProducts.map((prod) => {
+          const cartItem = cart.find((item) => item.prodid === prod.prodid);
+          if (cartItem) {
+            return {
+              ...prod,
+              quantity: Math.max(0, prod.quantity - cartItem.qty),
+            };
+          }
+          return prod;
+        })
+      );
+
       setOpenModal(false);
       setBankDetails({ accountNumber: "", accountName: "", bankName: "" });
       setCart([]);

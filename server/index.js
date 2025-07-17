@@ -28,6 +28,7 @@ const io = new Server(server, {
 });
 
 const port = 5000;
+const BANK_API_BASE = "http://192.168.8.201:5000/api";
 
 function logProductData(action, product) {
     console.log(`${action} Product:`);
@@ -367,6 +368,36 @@ app.get("/fetchallproductsmongo", async (req, res) => {
     }
 });
 
+// Helper: Fetch user from external bank API by account number
+async function fetchExternalBankUser(accountNumber) {
+  const userRes = await fetch(`${BANK_API_BASE}/users`);
+  if (!userRes.ok) {
+    throw new Error("Failed to fetch users from external bank");
+  }
+  const users = await userRes.json();
+  return users.find(u => String(u.accountNumber) === String(accountNumber));
+}
+
+// Helper: Transfer money using external bank API
+async function transferExternalBankFunds(fromUserId, toAccountNumber, amount, description) {
+  const transferBody = {
+    fromUserId,
+    toAccountNumber,
+    amount,
+    description: description || "Inter-bank transfer"
+  };
+  const transferRes = await fetch(`${BANK_API_BASE}/users/transfer`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(transferBody)
+  });
+  const transferResult = await transferRes.json();
+  if (!transferRes.ok) {
+    throw new Error(transferResult.error || "Bank transfer failed");
+  }
+  return transferResult;
+}
+
 // Process payment endpoint
 app.post("/api/process-payment", async (req, res) => {
   const { accountNumber, amount, description } = req.body;
@@ -374,27 +405,23 @@ app.post("/api/process-payment", async (req, res) => {
     return res.status(400).json({ message: "Missing accountNumber or amount" });
   }
   try {
-    // Find user by account number
-    const user = await User.findOne({ accountNumber });
-    if (!user) return res.status(404).json({ message: "Account not found" });
-
-    // Call BPI Bank API to subtract money
-    const response = await fetch("http://192.168.8.201:5000/api/users/transfer", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        fromUserId: user.userid,
-        toAccountNumber: "BPI_CENTRAL_ACCOUNT", // Replace with your central account number
-        amount,
-        description: description || "POS Payment"
-      })
-    });
-    const result = await response.json();
-    if (!response.ok) {
-      return res.status(400).json({ message: result.error || "Bank transfer failed" });
+    // 1. Fetch user from EXTERNAL BANK API
+    const user = await fetchExternalBankUser(accountNumber);
+    if (!user) {
+      return res.status(404).json({ message: "Account not found" });
     }
-    res.json({ message: "Payment processed", result });
+
+    // 2. Transfer funds using EXTERNAL BANK API
+    const transferResult = await transferExternalBankFunds(
+      user.userid,
+      "277765984082",
+      amount,
+      description
+    );
+
+    res.json({ message: "Payment processed", result: transferResult });
   } catch (error) {
+    console.error("Payment processing error:", error);
     res.status(500).json({ message: error.message });
   }
 });
