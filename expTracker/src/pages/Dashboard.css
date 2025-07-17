@@ -131,36 +131,7 @@
   background-color: var(--hover-red);
 }
 
-/* ========== Recently Added Section ========== */
-.recently-added {
-  margin-top: 40px;
-  background-color: var(--white);
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
 
-.recent-products-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 16px;
-}
-
-.recent-products-table th,
-.recent-products-table td {
-  border: 1px solid var(--border-gray);
-  padding: 10px 12px;
-  text-align: left;
-}
-
-.recent-products-table th {
-  background-color: var(--main-green);
-  color: var(--white);
-}
-
-.recent-products-table tr:nth-child(even) {
-  background-color: #f3f3f3;
-}
 
 /* ========== About Section ========== */
 .about-section {
@@ -273,7 +244,7 @@
 .branch-card {
   display: flex;
   align-items: center;
-  background: #f8f9fa;
+  background: #39695b;
   padding: 16px;
   border-radius: 12px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -356,6 +327,48 @@
   content: "|";
   margin: 0 8px;
   color: var(--white);
+}
+
+/* ========== Inventory Chart Section ========== */
+.inventory-chart-section {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 32px 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.inventory-chart-section h2 {
+  color: var(--primary-green);
+  font-size: 1.8rem;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--primary-light);
+}
+
+.chart-container {
+  height: 400px;
+  width: 100%;
+  position: relative;
+  padding: 24px;
+  cursor: pointer;
+}
+
+/* ========== Expired Chart Section ========== */
+.expired-chart-section {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 32px 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.expired-chart-section h2 {
+  color: var(--primary-green);
+  font-size: 1.8rem;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(220, 53, 69, 0.2);
 }
 
 /* ========== Responsive ========== */
