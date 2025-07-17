@@ -25,6 +25,10 @@ import axios from 'axios';
 import Autocomplete from '@mui/material/Autocomplete';
 import categories from '../assets/categories.js';
 import { API_BASE } from "../apiConfig.js";
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import TimelineIcon from '@mui/icons-material/Timeline';
+import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
 
 function Inventory() {
 
@@ -208,246 +212,277 @@ function Inventory() {
       <Sidebar />
       <main className="content">
         
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px", alignItems: 'center', marginTop: '40px' }}>
-          <Typography variant="h4" className="formal-title">Inventory</Typography>
-          <Button variant="contained" color="primary" onClick={() => setOpenModalAdd(true)}>
-            Add Product
-          </Button>
-        </div>
-
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell><strong>Product ID</strong></TableCell>
-                <TableCell><strong>Product Name</strong></TableCell>
-                <TableCell><strong>Category</strong></TableCell>
-                <TableCell><strong>Quantity</strong></TableCell>
-                <TableCell><strong>Unit</strong></TableCell>
-                <TableCell><strong>Date Added</strong></TableCell>
-                <TableCell><strong>Expiration Date</strong></TableCell>
-                <TableCell><strong>Status</strong></TableCell>
-                <TableCell><strong>Price</strong></TableCell> {/* Add this */}
-                <TableCell><strong>Actions</strong></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {products.length > 0 ? (
-                products.map((product) => (
-                  <TableRow key={product.prodid}>
-                    <TableCell>{product.prodid}</TableCell>
-                    <TableCell>{product.prodname}</TableCell>
-                    <TableCell>{product.category}</TableCell>
-                    <TableCell>{product.quantity}</TableCell>
-                    <TableCell>{product.unit}</TableCell>
-                    <TableCell>{product.expiry_date}</TableCell>
-                    <TableCell>{product.added_date}</TableCell>
-                    <TableCell>
-                      {product.approved
-                        ? <span style={{ color: "green", fontWeight: 500 }}>Approved</span>
-                        : <span style={{ color: "orange", fontWeight: 500 }}>Pending Approval</span>
-                      }
-                    </TableCell>
-                    <TableCell>
-                      {product.approved && product.price != null
-                        ? `₱${Number(product.price).toFixed(2)}`
-                        : <span style={{ color: "orange" }}>Pending</span>
-                      }
-                    </TableCell>
-                    <TableCell>
-                      <IconButton color="primary" onClick={() => handleOpenEditModal(product)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton color="error" onClick={() => handleOpenDeleteModal(product)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={10} align="center">No products found</TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-        <Dialog open={openModalAdd} onClose={() => setOpenModalAdd(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>Add New Product</DialogTitle>
-          <DialogContent>
-            <TextField 
-              inputRef={prodnameRef} 
-              label="Product Name"
-              variant="outlined" 
-              margin="normal" 
-              fullWidth 
-              required 
-            />
-            <Autocomplete
-              disablePortal
-              options={categories}
-              fullWidth
-              value={selectedCategory}
-              onChange={(event, newValue) => setSelectedCategory(newValue)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Category"
-                  inputRef={categoryRef}
-                  required
-                />
-              )}
-            />
-            <TextField 
-              inputRef={quantityRef} 
-              label="Quantity" 
-              variant="outlined" 
-              margin="normal" 
-              fullWidth 
-              required 
-            />
-            <TextField 
-              inputRef={unitRef} 
-              label="Unit" 
-              variant="outlined" 
-              helperText="e.g., kg, g, L, mL"
-              margin="normal" 
-              fullWidth 
-            />
-            <TextField            
-              inputRef={expiry_dateRef}
-              label="Expiry Date"
-              type="date"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              required
-              defaultValue={new Date().toISOString().slice(0, 10)}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-            <TextField
-              inputRef={added_dateRef}
-              label="Added Date"
-              type="date"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              disabled
-              defaultValue={new Date().toISOString().slice(0, 10)}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button 
-              onClick={() => setOpenModalAdd(false)} 
-              variant="contained" 
-              color="error"
-            >
-              Cancel
-            </Button>
+        <div className="board-container">
+          <div className="board-header">
+            <h2 className="board-title">
+              <DashboardIcon /> Inventory Board
+            </h2>
             <Button 
               variant="contained" 
-              onClick={handleAddProduct} 
               color="primary"
+              onClick={() => setOpenModalAdd(true)}
+              className="add-product-btn"
             >
               Add Product
             </Button>
-          </DialogActions>
-        </Dialog>
-         
-        <Dialog open={openModalEdit} onClose={() => setOpenModalEdit(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>Edit Product</DialogTitle>
-          <DialogContent>
-            <TextField 
-              name="prodid" 
-              label="Product ID" 
-              variant="outlined" 
-              margin="normal" 
-              fullWidth 
-              value={editFormData.prodid} 
-              disabled 
-            />
-            <TextField 
-              name="prodname" 
-              label="Product Name" 
-              variant="outlined" 
-              margin="normal" 
-              fullWidth 
-              value={editFormData.prodname} 
-              onChange={handleEditInputChange} 
-            />
-            <TextField 
-              name="category" 
-              label="Category" 
-              variant="outlined" 
-              margin="normal" 
-              fullWidth 
-              value={editFormData.category} 
-              onChange={handleEditInputChange} 
-            />
-            <TextField 
-              name="quantity" 
-              label="Quantity" 
-              variant="outlined" 
-              margin="normal" 
-              fullWidth 
-              value={editFormData.quantity} 
-              onChange={handleEditInputChange}
-            />
-            <TextField 
-              name="unit" 
-              label="Unit" 
-              variant="outlined" 
-              margin="normal" 
-              fullWidth 
-              value={editFormData.unit} 
-              onChange={handleEditInputChange}
-            />
-            <TextField
-              name="expiry_date"
-              label="Expiry Date"
-              type="date"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              value={editFormData.expiry_date}
-              onChange={handleEditInputChange}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenModalEdit(false)} variant="contained" color="error">
-              Cancel
-            </Button>
-            <Button variant="contained" onClick={handleEditProduct} color="primary">
-              Update Product
-            </Button>
-          </DialogActions>
-        </Dialog>
+          </div>
 
-        <Dialog open={openModalDelete} onClose={() => setOpenModalDelete(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>Delete Confirmation</DialogTitle>
-          <DialogContent>
-            <Typography>
-                Are you sure you want to delete the product <strong>{selectedProduct?.prodname}</strong>?
-            </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenModalDelete(false)} variant="contained">
-              Cancel
-            </Button>
-            <Button variant="contained" color="error" onClick={handleDeleteProduct}>
-              Delete
-            </Button>
-          </DialogActions>
-        </Dialog> 
+          <div className="board-stats">
+            <div className="stat-card">
+              <div className="stat-title">
+                <InventoryIcon sx={{ marginRight: 1 }} /> Total Products
+              </div>
+              <div className="stat-value">{products.length}</div>
+              <div className="stat-subtitle">Items in inventory</div>
+            </div>
+
+            <div className="stat-card">
+              <div className="stat-title">
+                <TimelineIcon sx={{ marginRight: 1 }} /> Stocks
+              </div>
+              <div className="stat-value">
+                {products.reduce((sum, product) => sum + Number(product.quantity), 0)}
+              </div>
+              <div className="stat-subtitle">Total quantity</div>
+            </div>
+          </div>
+
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell><strong>Product ID</strong></TableCell>
+                  <TableCell><strong>Product Name</strong></TableCell>
+                  <TableCell><strong>Category</strong></TableCell>
+                  <TableCell><strong>Quantity</strong></TableCell>
+                  <TableCell><strong>Unit</strong></TableCell>
+                  <TableCell><strong>Date Added</strong></TableCell>
+                  <TableCell><strong>Expiration Date</strong></TableCell>
+                  <TableCell><strong>Status</strong></TableCell>
+                  <TableCell><strong>Price</strong></TableCell> {/* Add this */}
+                  <TableCell><strong>Actions</strong></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {products.length > 0 ? (
+                  products.map((product) => (
+                    <TableRow key={product.prodid}>
+                      <TableCell>{product.prodid}</TableCell>
+                      <TableCell>{product.prodname}</TableCell>
+                      <TableCell>{product.category}</TableCell>
+                      <TableCell>{product.quantity}</TableCell>
+                      <TableCell>{product.unit}</TableCell>
+                      <TableCell>{product.expiry_date}</TableCell>
+                      <TableCell>{product.added_date}</TableCell>
+                      <TableCell>
+                        {product.approved ? (
+                          <span className="status-approved">Approved</span>
+                        ) : (
+                          <span className="status-pending">Pending</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {product.approved && product.price != null ? (
+                          <span className="price-cell">₱{Number(product.price).toFixed(2)}</span>
+                        ) : (
+                          <span className="price-pending">Pending</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <IconButton color="primary" onClick={() => handleOpenEditModal(product)}>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton color="error" onClick={() => handleOpenDeleteModal(product)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={10} align="center">No products found</TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <Dialog open={openModalAdd} onClose={() => setOpenModalAdd(false)} maxWidth="sm" fullWidth>
+            <DialogTitle>Add New Product</DialogTitle>
+            <DialogContent>
+              <TextField 
+                inputRef={prodnameRef} 
+                label="Product Name"
+                variant="outlined" 
+                margin="normal" 
+                fullWidth 
+                required 
+              />
+              <Autocomplete
+                disablePortal
+                options={categories}
+                fullWidth
+                value={selectedCategory}
+                onChange={(event, newValue) => setSelectedCategory(newValue)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Category"
+                    inputRef={categoryRef}
+                    required
+                  />
+                )}
+              />
+              <TextField 
+                inputRef={quantityRef} 
+                label="Quantity" 
+                variant="outlined" 
+                margin="normal" 
+                fullWidth 
+                required 
+              />
+              <TextField 
+                inputRef={unitRef} 
+                label="Unit" 
+                variant="outlined" 
+                helperText="e.g., kg, g, L, mL"
+                margin="normal" 
+                fullWidth 
+              />
+              <TextField            
+                inputRef={expiry_dateRef}
+                label="Expiry Date"
+                type="date"
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                required
+                defaultValue={new Date().toISOString().slice(0, 10)}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              <TextField
+                inputRef={added_dateRef}
+                label="Added Date"
+                type="date"
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                disabled
+                defaultValue={new Date().toISOString().slice(0, 10)}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button 
+                onClick={() => setOpenModalAdd(false)} 
+                variant="contained" 
+                color="error"
+              >
+                Cancel
+              </Button>
+              <Button 
+                variant="contained" 
+                onClick={handleAddProduct} 
+                color="primary"
+              >
+                Add Product
+              </Button>
+            </DialogActions>
+          </Dialog>
+           
+          <Dialog open={openModalEdit} onClose={() => setOpenModalEdit(false)} maxWidth="sm" fullWidth>
+            <DialogTitle>Edit Product</DialogTitle>
+            <DialogContent>
+              <TextField 
+                name="prodid" 
+                label="Product ID" 
+                variant="outlined" 
+                margin="normal" 
+                fullWidth 
+                value={editFormData.prodid} 
+                disabled 
+              />
+              <TextField 
+                name="prodname" 
+                label="Product Name" 
+                variant="outlined" 
+                margin="normal" 
+                fullWidth 
+                value={editFormData.prodname} 
+                onChange={handleEditInputChange} 
+              />
+              <TextField 
+                name="category" 
+                label="Category" 
+                variant="outlined" 
+                margin="normal" 
+                fullWidth 
+                value={editFormData.category} 
+                onChange={handleEditInputChange} 
+              />
+              <TextField 
+                name="quantity" 
+                label="Quantity" 
+                variant="outlined" 
+                margin="normal" 
+                fullWidth 
+                value={editFormData.quantity} 
+                onChange={handleEditInputChange}
+              />
+              <TextField 
+                name="unit" 
+                label="Unit" 
+                variant="outlined" 
+                margin="normal" 
+                fullWidth 
+                value={editFormData.unit} 
+                onChange={handleEditInputChange}
+              />
+              <TextField
+                name="expiry_date"
+                label="Expiry Date"
+                type="date"
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                value={editFormData.expiry_date}
+                onChange={handleEditInputChange}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setOpenModalEdit(false)} variant="contained" color="error">
+                Cancel
+              </Button>
+              <Button variant="contained" onClick={handleEditProduct} color="primary">
+                Update Product
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          <Dialog open={openModalDelete} onClose={() => setOpenModalDelete(false)} maxWidth="sm" fullWidth>
+            <DialogTitle>Delete Confirmation</DialogTitle>
+            <DialogContent>
+              <Typography>
+                  Are you sure you want to delete the product <strong>{selectedProduct?.prodname}</strong>?
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setOpenModalDelete(false)} variant="contained">
+                Cancel
+              </Button>
+              <Button variant="contained" color="error" onClick={handleDeleteProduct}>
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog> 
+        </div>
       </main>
     </div>
   );
